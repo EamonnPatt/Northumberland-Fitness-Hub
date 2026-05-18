@@ -264,7 +264,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#111] py-12 text-white/60 text-center">
+      <footer className="bg-secondary py-12 text-white/60 text-center">
         <div className="container mx-auto px-4">
           <div className="text-2xl font-serif font-bold text-white uppercase tracking-wider mb-6">
             Northumberland <span className="text-primary">Fitness</span>
@@ -284,7 +284,7 @@ export default function Home() {
               </a>
             ))}
           </div>
-          <p className="text-sm">© 2024 Northumberland Fitness. All Rights Reserved.</p>
+          <p className="text-sm">© 2026 Northumberland Fitness. All Rights Reserved.</p>
         </div>
       </footer>
     </div>

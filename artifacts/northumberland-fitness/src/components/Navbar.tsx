@@ -59,12 +59,12 @@ export default function Navbar() {
     <nav
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-secondary py-3 shadow-lg" : "bg-secondary/90 py-5 backdrop-blur-sm"
+        isScrolled ? "bg-white py-3 shadow-lg" : "bg-white/95 py-5 backdrop-blur-sm"
       )}
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         <div 
-          className="text-2xl md:text-3xl font-serif font-bold text-white cursor-pointer uppercase tracking-wider"
+          className="text-2xl md:text-3xl font-serif font-bold text-secondary cursor-pointer uppercase tracking-wider"
           onClick={() => handleNavClick("home")}
           data-testid="nav-logo"
         >
@@ -81,7 +81,7 @@ export default function Navbar() {
                 "text-sm font-semibold uppercase tracking-wider transition-colors duration-200",
                 activeSection === link.id
                   ? "text-primary"
-                  : "text-white hover:text-primary"
+                  : "text-secondary hover:text-primary"
               )}
               data-testid={`nav-link-${link.id}`}
             >
@@ -92,7 +92,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Toggle */}
         <button
-          className="lg:hidden text-white hover:text-primary transition-colors"
+          className="lg:hidden text-secondary hover:text-primary transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           data-testid="nav-mobile-toggle"
         >
@@ -102,17 +102,17 @@ export default function Navbar() {
 
       {/* Mobile Nav */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 right-0 bg-secondary shadow-xl border-t border-secondary-border">
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-white shadow-xl border-t border-border">
           <div className="flex flex-col py-4 px-6 space-y-4">
             {NAV_LINKS.map((link) => (
               <button
                 key={link.id}
                 onClick={() => handleNavClick(link.id)}
                 className={cn(
-                  "text-left text-base font-semibold uppercase tracking-wider transition-colors py-2 border-b border-white/10 last:border-0",
+                  "text-left text-base font-semibold uppercase tracking-wider transition-colors py-2 border-b border-border last:border-0",
                   activeSection === link.id
                     ? "text-primary"
-                    : "text-white hover:text-primary"
+                    : "text-secondary hover:text-primary"
                 )}
                 data-testid={`nav-mobile-link-${link.id}`}
               >
