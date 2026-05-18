@@ -264,9 +264,9 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-secondary py-12 text-white/60 text-center">
+      <footer className="bg-white py-12 text-foreground/60 text-center border-t border-border">
         <div className="container mx-auto px-4">
-          <div className="text-2xl font-serif font-bold text-white uppercase tracking-wider mb-6">
+          <div className="text-2xl font-serif font-bold text-secondary uppercase tracking-wider mb-6">
             Northumberland <span className="text-primary">Fitness</span>
           </div>
           <div className="flex flex-wrap justify-center gap-6 mb-8 text-sm font-medium uppercase tracking-wider">
