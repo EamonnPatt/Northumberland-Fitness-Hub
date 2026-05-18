@@ -221,7 +221,7 @@ export default function Home() {
           </div>
 
           {/* Register */}
-          <div id="register" className="py-24 px-8 md:px-16 lg:px-24 bg-primary text-secondary-foreground relative">
+          <div id="register" className="py-24 px-8 md:px-16 lg:px-24 bg-white text-secondary relative">
             <motion.div
               initial="hidden"
               whileInView="show"
@@ -235,14 +235,14 @@ export default function Home() {
               <motion.form variants={itemVariant} className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                 <div className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">
-                    <Input placeholder="First Name" className="bg-white/50 border-secondary/20 text-secondary placeholder:text-secondary/60 h-14 rounded-none focus-visible:ring-secondary text-lg" />
-                    <Input placeholder="Last Name" className="bg-white/50 border-secondary/20 text-secondary placeholder:text-secondary/60 h-14 rounded-none focus-visible:ring-secondary text-lg" />
+                    <Input placeholder="First Name" className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg" />
+                    <Input placeholder="Last Name" className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg" />
                   </div>
-                  <Input placeholder="Email Address" type="email" className="bg-white/50 border-secondary/20 text-secondary placeholder:text-secondary/60 h-14 rounded-none focus-visible:ring-secondary text-lg" />
-                  <Input placeholder="Phone Number" type="tel" className="bg-white/50 border-secondary/20 text-secondary placeholder:text-secondary/60 h-14 rounded-none focus-visible:ring-secondary text-lg" />
+                  <Input placeholder="Email Address" type="email" className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg" />
+                  <Input placeholder="Phone Number" type="tel" className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg" />
                   
                   <Select>
-                    <SelectTrigger className="bg-white/50 border-secondary/20 text-secondary h-14 rounded-none focus:ring-secondary text-lg">
+                    <SelectTrigger className="bg-muted border-secondary/30 text-secondary h-14 rounded-none focus:ring-secondary text-lg">
                       <SelectValue placeholder="Select Membership Type" />
                     </SelectTrigger>
                     <SelectContent>
