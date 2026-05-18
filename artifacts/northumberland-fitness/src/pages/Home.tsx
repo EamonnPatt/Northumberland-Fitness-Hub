@@ -53,10 +53,7 @@ export default function Home() {
             </motion.h2>
             <motion.div variants={itemVariant} className="w-24 h-2 bg-primary mx-auto mb-8"></motion.div>
             <motion.p variants={itemVariant} className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-              We are more than just a gym. We are a community of dedicated individuals striving for excellence. 
-              Our state-of-the-art facility provides everything you need to transform your body and mind. 
-              Whether you are taking your first steps or pushing your limits as an elite athlete, 
-              Northumberland Fitness is where your legacy begins.
+              Welcome to Northumberland Fitness, a modern fitness club built for real people, real goals, and real progress. We combine a clean, well-maintained environment with high-quality equipment, certified trainers, and a supportive community that keeps you motivated every step of the way.
             </motion.p>
           </motion.div>
         </div>
