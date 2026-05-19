@@ -56,6 +56,40 @@ export default function Home() {
               Welcome to Northumberland Fitness, a modern fitness club built for real people, real goals, and real progress. We combine a clean, well-maintained environment with high-quality equipment, certified trainers, and a supportive community that keeps you motivated every step of the way.
             </motion.p>
           </motion.div>
+
+          <motion.div
+            className="grid md:grid-cols-3 gap-8 mt-16"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+          >
+            {[
+              {
+                icon: Dumbbell,
+                title: "Train With Confidence",
+                body: "Our facility is designed to help you move safely and effectively. From spotless workout areas to regularly maintained machines, we make sure your focus stays on your goals — not the equipment."
+              },
+              {
+                icon: Activity,
+                title: "Everything You Need to Succeed",
+                body: "Whether you're lifting, running, stretching, or training for performance, our wide range of cardio machines, free weights, resistance equipment, and functional tools supports every style of fitness."
+              },
+              {
+                icon: Users,
+                title: "Guidance From Professionals",
+                body: "Our certified trainers and knowledgeable staff are here to help you train smarter, improve technique, and get results that last."
+              }
+            ].map((item, idx) => (
+              <motion.div key={idx} variants={itemVariant} className="flex flex-col items-center text-center p-8 border-t-4 border-primary bg-muted">
+                <div className="w-14 h-14 bg-secondary flex items-center justify-center mb-5">
+                  <item.icon className="w-7 h-7 text-primary" />
+                </div>
+                <h3 className="text-xl font-serif text-secondary mb-3 uppercase">{item.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{item.body}</p>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
