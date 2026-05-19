@@ -117,6 +117,32 @@ export default function Home() {
               </p>
             </motion.div>
           </motion.div>
+
+          {/* Our Values */}
+          <motion.div
+            className="mt-16"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+          >
+            <motion.h3 variants={itemVariant} className="text-3xl font-serif text-center text-primary mb-10 uppercase">Our Values</motion.h3>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              {[
+                { title: "Excellence", desc: "We maintain a clean, organized, and professionally run facility." },
+                { title: "Safety", desc: "We prioritize proper equipment setup, accessibility, and member comfort." },
+                { title: "Community", desc: "We foster a supportive, encouraging environment where everyone belongs." },
+                { title: "Integrity", desc: "We operate with transparency, professionalism, and genuine care for our members." },
+                { title: "Progress", desc: "We believe in consistent improvement — both for our members and our facility." },
+              ].map((value, idx) => (
+                <motion.div key={idx} variants={itemVariant} className="bg-white/10 border border-white/20 p-6 text-center backdrop-blur-sm">
+                  <div className="w-2 h-2 bg-primary mx-auto mb-4 rounded-full"></div>
+                  <h4 className="text-lg font-serif text-primary mb-2 uppercase">{value.title}</h4>
+                  <p className="text-white/75 text-sm leading-relaxed">{value.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </section>
 
