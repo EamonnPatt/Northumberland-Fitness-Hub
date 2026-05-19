@@ -107,17 +107,13 @@ export default function Home() {
             <motion.div variants={itemVariant} className="bg-secondary-foreground/5 p-10 border-l-4 border-primary backdrop-blur-sm">
               <h3 className="text-3xl font-serif mb-4 text-primary">Our Mission</h3>
               <p className="text-lg text-white/80 leading-relaxed">
-                To empower our members to achieve their peak physical and mental condition through 
-                world-class equipment, expert coaching, and a relentless commitment to excellence. 
-                We provide the tools; you bring the grind.
+                To provide a clean, safe, and motivating fitness environment where individuals of all ages and experience levels can pursue their health and wellness goals with confidence. We are committed to delivering exceptional service, professional guidance, and a community-driven atmosphere that inspires long-term success.
               </p>
             </motion.div>
             <motion.div variants={itemVariant} className="bg-secondary-foreground/5 p-10 border-l-4 border-accent backdrop-blur-sm">
               <h3 className="text-3xl font-serif mb-4 text-accent">Our Vision</h3>
               <p className="text-lg text-white/80 leading-relaxed">
-                To be the premier fitness destination in Northumberland, known for forging strong 
-                bodies, unbreakable mindsets, and a supportive community that celebrates every victory, 
-                no matter how small.
+                To become Northumberland County's leading fitness destination — recognized for our high standards, modern facility, and member-first approach. We aim to empower our community through accessible fitness, expert support, and a culture built on positivity, respect, and continuous improvement. Fitness for All!!!
               </p>
             </motion.div>
           </motion.div>
