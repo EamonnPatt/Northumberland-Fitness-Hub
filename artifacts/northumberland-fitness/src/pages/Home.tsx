@@ -202,10 +202,13 @@ export default function Home() {
 
             <motion.div variants={itemVariant} className="space-y-4">
               {[
-                { day: "Monday - Friday", hours: "5:00 AM - 11:00 PM" },
-                { day: "Saturday", hours: "6:00 AM - 9:00 PM" },
-                { day: "Sunday", hours: "7:00 AM - 8:00 PM" },
-                { day: "Public Holidays", hours: "8:00 AM - 4:00 PM" }
+                { day: "Monday", hours: "6:00 AM — 10:00 PM" },
+                { day: "Tuesday", hours: "6:00 AM — 10:00 PM" },
+                { day: "Wednesday", hours: "6:00 AM — 10:00 PM" },
+                { day: "Thursday", hours: "6:00 AM — 10:00 PM" },
+                { day: "Friday", hours: "6:00 AM — 10:00 PM" },
+                { day: "Saturday", hours: "6:00 AM — 10:00 PM" },
+                { day: "Sunday", hours: "6:00 AM — 10:00 PM" },
               ].map((item, idx) => (
                 <div key={idx} className="flex justify-between items-center py-4 border-b border-border last:border-0">
                   <span className="text-lg font-semibold text-secondary">{item.day}</span>
