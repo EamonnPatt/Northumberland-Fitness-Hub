@@ -1,4 +1,6 @@
 import React from "react";
+import logoSrc from "@assets/northumberland_logo.png";
+
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import HeroSlider from "@/components/HeroSlider";
@@ -322,8 +324,12 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-white py-12 text-foreground/60 text-center border-t border-border">
         <div className="container mx-auto px-4">
-          <div className="text-2xl font-serif font-bold text-secondary uppercase tracking-wider mb-6">
-            Northumberland <span className="text-primary">Fitness</span>
+          <div className="flex justify-center items-center gap-3 mb-6">
+            <img src={logoSrc} alt="Northumberland Fitness logo" style={{ width: '64px', height: 'auto' }} />
+            <div className="leading-tight text-left">
+              <div className="text-secondary font-serif font-bold text-xl uppercase tracking-wide">Northumberland</div>
+              <div className="text-primary font-serif font-bold text-xl uppercase tracking-widest">Fitness</div>
+            </div>
           </div>
           <div className="flex flex-wrap justify-center gap-6 mb-8 text-sm font-medium uppercase tracking-wider">
             {["Home", "About Us", "Programs", "Club Hours", "Contact"].map((item) => (

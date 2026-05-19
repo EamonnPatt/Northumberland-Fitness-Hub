@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "wouter";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import logoSrc from "@assets/northumberland_logo.png";
+
 
 const NAV_LINKS = [
   { label: "Home", id: "home" },
@@ -59,16 +60,24 @@ export default function Navbar() {
     <nav
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-white py-3 shadow-lg" : "bg-white/95 py-5 backdrop-blur-sm"
+        isScrolled ? "bg-secondary py-2 shadow-lg" : "bg-secondary/95 py-2 backdrop-blur-sm"
       )}
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
-        <div 
-          className="text-2xl md:text-3xl font-serif font-bold text-secondary cursor-pointer uppercase tracking-wider"
+        <div
+          className="cursor-pointer shrink-0 flex items-center gap-3"
           onClick={() => handleNavClick("home")}
           data-testid="nav-logo"
         >
-          Northumberland <span className="text-primary">Fitness</span>
+          <img
+            src={logoSrc}
+            alt="Northumberland Fitness logo"
+            style={{ width: '72px', height: 'auto' }}
+          />
+          <div className="leading-tight">
+            <div className="text-white font-serif font-bold text-xl uppercase tracking-wide">Northumberland</div>
+            <div className="text-primary font-serif font-bold text-xl uppercase tracking-widest">Fitness</div>
+          </div>
         </div>
 
         {/* Desktop Nav */}
@@ -81,7 +90,7 @@ export default function Navbar() {
                 "text-sm font-semibold uppercase tracking-wider transition-colors duration-200",
                 activeSection === link.id
                   ? "text-primary"
-                  : "text-secondary hover:text-primary"
+                  : "text-white hover:text-primary"
               )}
               data-testid={`nav-link-${link.id}`}
             >
@@ -92,7 +101,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Toggle */}
         <button
-          className="lg:hidden text-secondary hover:text-primary transition-colors"
+          className="lg:hidden text-white hover:text-primary transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           data-testid="nav-mobile-toggle"
         >
@@ -102,17 +111,17 @@ export default function Navbar() {
 
       {/* Mobile Nav */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 right-0 bg-white shadow-xl border-t border-border">
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-secondary shadow-xl border-t border-white/10">
           <div className="flex flex-col py-4 px-6 space-y-4">
             {NAV_LINKS.map((link) => (
               <button
                 key={link.id}
                 onClick={() => handleNavClick(link.id)}
                 className={cn(
-                  "text-left text-base font-semibold uppercase tracking-wider transition-colors py-2 border-b border-border last:border-0",
+                  "text-left text-base font-semibold uppercase tracking-wider transition-colors py-2 border-b border-white/10 last:border-0",
                   activeSection === link.id
                     ? "text-primary"
-                    : "text-secondary hover:text-primary"
+                    : "text-white hover:text-primary"
                 )}
                 data-testid={`nav-mobile-link-${link.id}`}
               >
