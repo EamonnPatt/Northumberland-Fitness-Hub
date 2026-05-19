@@ -324,9 +324,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-white py-12 text-foreground/60 text-center border-t border-border">
         <div className="container mx-auto px-4">
-          <div className="flex justify-center mb-6">
-            <img src={logoSrc} alt="Northumberland Fitness logo" style={{ width: '80px', height: 'auto' }} />
-          </div>
+
           <div className="flex flex-wrap justify-center gap-6 mb-8 text-sm font-medium uppercase tracking-wider">
             {["Home", "About Us", "Programs", "Club Hours", "Contact"].map((item) => (
               <a 
