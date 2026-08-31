@@ -72,7 +72,7 @@ export default function Navbar() {
           <img
             src={logoSrc}
             alt="Northumberland Fitness logo"
-            style={{ width: '72px', height: 'auto' }}
+            style={{ width: '120px', height: 'auto' }}
           />
         </div>
 

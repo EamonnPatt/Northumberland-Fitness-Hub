@@ -6,18 +6,18 @@ import { Button } from "@/components/ui/button";
 const SLIDES = [
   {
     image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop",
-    title: "Forge Your Legacy",
-    subtitle: "Premium equipment. Elite coaching. Unmatched atmosphere.",
+    title: "Feel Better. Move Better. Live Stronger",
+    subtitle: "Premium Equipment. Safe Environment. Supportive Community",
   },
   {
     image: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=2070&auto=format&fit=crop",
-    title: "Push Your Limits",
-    subtitle: "Join a community dedicated to serious results.",
+    title: "Progress Starts The Moment You Show Up",
+    subtitle: "Your Journey. Your Pace. Your Progress.",
   },
   {
     image: "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=2070&auto=format&fit=crop",
-    title: "Train Like A Pro",
-    subtitle: "From beginner to athlete, we have the space for you.",
+    title: "Push Past Limits. Build What Lasts.",
+    subtitle: "Every Repetition Builds the Future you Want",
   }
 ];
 
@@ -84,7 +84,7 @@ export default function HeroSlider() {
                     onClick={() => document.getElementById("register")?.scrollIntoView({ behavior: "smooth" })}
                     data-testid={`hero-cta-${index}`}
                   >
-                    Start Training Now
+                    Join Us Today
                   </Button>
                 </div>
               </div>

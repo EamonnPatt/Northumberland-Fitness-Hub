@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import logoSrc from "@assets/northumberland_logo.png";
 
 import { motion } from "framer-motion";
@@ -15,9 +15,68 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
 import { Dumbbell, Activity, Users, HeartPulse, Clock, MapPin, Phone, Mail, ArrowRight } from "lucide-react";
 
+const CONTACT_ENDPOINT = `${import.meta.env.BASE_URL}contact.php`;
+
+const emptyContactForm = { name: "", email: "", message: "" };
+const emptyRegisterForm = { firstName: "", lastName: "", email: "", phone: "", membership: "" };
+
 export default function Home() {
+  const { toast } = useToast();
+  const [contactForm, setContactForm] = useState(emptyContactForm);
+  const [contactSubmitting, setContactSubmitting] = useState(false);
+  const [registerForm, setRegisterForm] = useState(emptyRegisterForm);
+  const [registerSubmitting, setRegisterSubmitting] = useState(false);
+
+  async function submitForm(
+    payload: Record<string, string>,
+    onSuccess: () => void,
+    setSubmitting: (value: boolean) => void,
+  ) {
+    setSubmitting(true);
+    try {
+      const res = await fetch(CONTACT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.ok) {
+        throw new Error(data?.message || "Something went wrong. Please try again.");
+      }
+      toast({ title: "Success", description: data.message });
+      onSuccess();
+    } catch (err) {
+      toast({
+        title: "Couldn't send",
+        description: err instanceof Error ? err.message : "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  function handleContactSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    submitForm(
+      { type: "contact", ...contactForm },
+      () => setContactForm(emptyContactForm),
+      setContactSubmitting,
+    );
+  }
+
+  function handleRegisterSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    submitForm(
+      { type: "register", ...registerForm },
+      () => setRegisterForm(emptyRegisterForm),
+      setRegisterSubmitting,
+    );
+  }
+
   const staggerContainer = {
     hidden: { opacity: 0 },
     show: {
@@ -28,7 +87,7 @@ export default function Home() {
 
   const itemVariant = {
     hidden: { opacity: 0, y: 30 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } }
   };
 
   return (
@@ -69,7 +128,7 @@ export default function Home() {
             {[
               {
                 icon: Dumbbell,
-                title: "Train With Confidence",
+                title: "Built for your Best",
                 body: "Our facility is designed to help you move safely and effectively. From spotless workout areas to regularly maintained machines, we make sure your focus stays on your goals — not the equipment."
               },
               {
@@ -152,7 +211,7 @@ export default function Home() {
       <section id="programs" className="py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-serif text-secondary mb-4">Elite Programs</h2>
+            <h2 className="text-4xl md:text-5xl font-serif text-secondary mb-4">Specialized Programs</h2>
             <div className="w-24 h-2 bg-primary mx-auto"></div>
           </div>
 
@@ -244,7 +303,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-bold uppercase text-sm text-white/60">Location</h4>
-                    <p>123 Iron Avenue, Northumberland</p>
+                    <p>Northumberland Mall - 1111 Elgin Street West - Cobourg, ON K9A 5H7</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -253,7 +312,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-bold uppercase text-sm text-white/60">Phone</h4>
-                    <p>+1 (555) 123-4567</p>
+                    <p>905-372-2628</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -267,12 +326,31 @@ export default function Home() {
                 </div>
               </motion.div>
 
-              <motion.form variants={itemVariant} className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-                <Input placeholder="Your Name" className="bg-white/5 border-white/10 text-white placeholder:text-white/40 h-12 rounded-none focus-visible:ring-primary" />
-                <Input placeholder="Your Email" type="email" className="bg-white/5 border-white/10 text-white placeholder:text-white/40 h-12 rounded-none focus-visible:ring-primary" />
-                <Textarea placeholder="Your Message" className="bg-white/5 border-white/10 text-white placeholder:text-white/40 min-h-[120px] rounded-none focus-visible:ring-primary" />
-                <Button type="button" className="w-full bg-accent hover:bg-accent/90 text-white rounded-none h-12 uppercase font-bold tracking-wider" data-testid="contact-submit">
-                  Send Message
+              <motion.form variants={itemVariant} className="space-y-4" onSubmit={handleContactSubmit}>
+                <Input
+                  placeholder="Your Name"
+                  required
+                  value={contactForm.name}
+                  onChange={(e) => setContactForm((f) => ({ ...f, name: e.target.value }))}
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40 h-12 rounded-none focus-visible:ring-primary"
+                />
+                <Input
+                  placeholder="Your Email"
+                  type="email"
+                  required
+                  value={contactForm.email}
+                  onChange={(e) => setContactForm((f) => ({ ...f, email: e.target.value }))}
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40 h-12 rounded-none focus-visible:ring-primary"
+                />
+                <Textarea
+                  placeholder="Your Message"
+                  required
+                  value={contactForm.message}
+                  onChange={(e) => setContactForm((f) => ({ ...f, message: e.target.value }))}
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40 min-h-[120px] rounded-none focus-visible:ring-primary"
+                />
+                <Button type="submit" disabled={contactSubmitting} className="w-full bg-accent hover:bg-accent/90 text-white rounded-none h-12 uppercase font-bold tracking-wider" data-testid="contact-submit">
+                  {contactSubmitting ? "Sending…" : "Send Message"}
                 </Button>
               </motion.form>
             </motion.div>
@@ -287,19 +365,47 @@ export default function Home() {
               variants={staggerContainer}
               className="relative z-10"
             >
-              <motion.h2 variants={itemVariant} className="text-5xl font-serif mb-4 uppercase text-secondary">Join The Club</motion.h2>
+              <motion.h2 variants={itemVariant} className="text-5xl font-serif mb-4 uppercase text-secondary">Join Us Today</motion.h2>
               <motion.p variants={itemVariant} className="text-secondary/80 mb-10 text-lg font-medium">Ready to start? Sign up for a membership today.</motion.p>
 
-              <motion.form variants={itemVariant} className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+              <motion.form variants={itemVariant} className="space-y-6" onSubmit={handleRegisterSubmit}>
                 <div className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">
-                    <Input placeholder="First Name" className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg" />
-                    <Input placeholder="Last Name" className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg" />
+                    <Input
+                      placeholder="First Name"
+                      required
+                      value={registerForm.firstName}
+                      onChange={(e) => setRegisterForm((f) => ({ ...f, firstName: e.target.value }))}
+                      className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg"
+                    />
+                    <Input
+                      placeholder="Last Name"
+                      required
+                      value={registerForm.lastName}
+                      onChange={(e) => setRegisterForm((f) => ({ ...f, lastName: e.target.value }))}
+                      className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg"
+                    />
                   </div>
-                  <Input placeholder="Email Address" type="email" className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg" />
-                  <Input placeholder="Phone Number" type="tel" className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg" />
-                  
-                  <Select>
+                  <Input
+                    placeholder="Email Address"
+                    type="email"
+                    required
+                    value={registerForm.email}
+                    onChange={(e) => setRegisterForm((f) => ({ ...f, email: e.target.value }))}
+                    className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg"
+                  />
+                  <Input
+                    placeholder="Phone Number"
+                    type="tel"
+                    value={registerForm.phone}
+                    onChange={(e) => setRegisterForm((f) => ({ ...f, phone: e.target.value }))}
+                    className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg"
+                  />
+
+                  <Select
+                    value={registerForm.membership}
+                    onValueChange={(value) => setRegisterForm((f) => ({ ...f, membership: value }))}
+                  >
                     <SelectTrigger className="bg-muted border-secondary/30 text-secondary h-14 rounded-none focus:ring-secondary text-lg">
                       <SelectValue placeholder="Select Membership Type" />
                     </SelectTrigger>
@@ -311,8 +417,8 @@ export default function Home() {
                   </Select>
                 </div>
 
-                <Button type="button" size="lg" className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-none h-16 text-xl uppercase font-bold tracking-wider flex gap-2 items-center" data-testid="register-submit">
-                  Secure Your Spot <ArrowRight className="w-6 h-6" />
+                <Button type="submit" disabled={registerSubmitting} size="lg" className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-none h-16 text-xl uppercase font-bold tracking-wider flex gap-2 items-center" data-testid="register-submit">
+                  {registerSubmitting ? "Submitting…" : <>Secure Your Spot <ArrowRight className="w-6 h-6" /></>}
                 </Button>
               </motion.form>
             </motion.div>
