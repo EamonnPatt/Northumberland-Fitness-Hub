@@ -1,20 +1,18 @@
 # This repo is cloned directly into the live document root (cPanel Git
-# Version Control on this host can't clone outside public_html), so the
-# raw source sits alongside the deployed site. Deny everything by
-# default and only re-open the one folder that's meant to be public:
-# artifacts/northumberland-fitness/dist/public (see the .htaccess in
-# that folder, which re-grants access for itself).
-<IfModule mod_authz_core.c>
-    Require all denied
-</IfModule>
-<IfModule !mod_authz_core.c>
-    Order deny,allow
-    Deny from all
-</IfModule>
-
+# Version Control on this host can't clone outside public_html), so
+# the raw source sits alongside the deployed site (index.html, assets/,
+# contact.php, etc., which are also committed at the repo root).
+# Deny direct access to the source tree; everything else is real site
+# content and is served normally below.
 RewriteEngine On
-RewriteBase /
 
-# Map every request into the built site.
-RewriteCond %{REQUEST_URI} !^/artifacts/northumberland-fitness/dist/public/
-RewriteRule ^(.*)$ artifacts/northumberland-fitness/dist/public/$1 [L]
+RewriteRule ^(package(-lock)?\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|tsconfig(\.base)?\.json|replit\.md|\.replit.*|\.npmrc|\.gitignore|\.gitattributes|\.htaccess)$ - [F,L]
+RewriteRule ^(lib|scripts|attached_assets|artifacts|node_modules|\.git)(/.*)?$ - [F,L]
+
+# Serve real files and directories as-is.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Everything else falls back to the SPA entry point.
+RewriteRule ^ index.html [L]
