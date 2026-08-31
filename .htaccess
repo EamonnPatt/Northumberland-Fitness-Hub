@@ -1,0 +1,20 @@
+# This repo is cloned directly into the live document root (cPanel Git
+# Version Control on this host can't clone outside public_html), so the
+# raw source sits alongside the deployed site. Deny everything by
+# default and only re-open the one folder that's meant to be public:
+# artifacts/northumberland-fitness/dist/public (see the .htaccess in
+# that folder, which re-grants access for itself).
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+</IfModule>
+
+RewriteEngine On
+RewriteBase /
+
+# Map every request into the built site.
+RewriteCond %{REQUEST_URI} !^/artifacts/northumberland-fitness/dist/public/
+RewriteRule ^(.*)$ artifacts/northumberland-fitness/dist/public/$1 [L]

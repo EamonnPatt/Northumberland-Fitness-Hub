@@ -2,6 +2,8 @@
 
 # compiled output
 dist
+!/artifacts/northumberland-fitness/dist/
+!/artifacts/northumberland-fitness/dist/**
 tmp
 out-tsc
 *.tsbuildinfo
