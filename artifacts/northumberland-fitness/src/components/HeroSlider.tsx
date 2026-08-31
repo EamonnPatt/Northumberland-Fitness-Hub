@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 const SLIDES = [
   {
     image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop",
-    title: "Feel Better. Move Better. Live Stronger",
+    title: "Feel Better. Move Better.\nLive Stronger",
     subtitle: "Premium Equipment. Safe Environment. Supportive Community",
   },
   {
@@ -72,7 +72,7 @@ export default function HeroSlider() {
               />
               <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent flex flex-col justify-center px-6 md:px-20 lg:px-32">
                 <div className="max-w-3xl">
-                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-white uppercase tracking-tight mb-4 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-white uppercase tracking-tight mb-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 whitespace-pre-line">
                     {slide.title}
                   </h1>
                   <p className="text-lg md:text-2xl text-white/90 font-medium mb-8 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-150">

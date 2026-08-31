@@ -312,7 +312,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-bold uppercase text-sm text-white/60">Phone</h4>
-                    <p>905-372-2628</p>
+                    <p>289-629-8333</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
