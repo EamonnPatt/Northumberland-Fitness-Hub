@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 const SLIDES = [
   {
     image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop",
-    title: "Feel Better. Move Better.\nLive Stronger",
+    title: "Feel Better. Move Better.Live Stronger",
     subtitle: "Premium Equipment. Safe Environment. Supportive Community",
   },
   {
