@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "wouter";
 import logoSrc from "@assets/northumberland_logo.png";
 
 import { motion } from "framer-motion";
@@ -16,12 +17,26 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Dumbbell, Activity, Users, HeartPulse, Clock, MapPin, Phone, Mail, ArrowRight } from "lucide-react";
+import { apiFetch } from "@/lib/api";
+import { Dumbbell, Activity, Users, HeartPulse, Clock, MapPin, Phone, Mail, ArrowRight, CalendarDays, Tag } from "lucide-react";
 
 const CONTACT_ENDPOINT = `${import.meta.env.BASE_URL}contact.php`;
 
 const emptyContactForm = { name: "", email: "", message: "" };
 const emptyRegisterForm = { firstName: "", lastName: "", email: "", phone: "", membership: "" };
+
+const DEFAULT_HOURS = [
+  { day: "Monday", hours: "6:00 AM — 10:00 PM" },
+  { day: "Tuesday", hours: "6:00 AM — 10:00 PM" },
+  { day: "Wednesday", hours: "6:00 AM — 10:00 PM" },
+  { day: "Thursday", hours: "6:00 AM — 10:00 PM" },
+  { day: "Friday", hours: "6:00 AM — 10:00 PM" },
+  { day: "Saturday", hours: "6:00 AM — 10:00 PM" },
+  { day: "Sunday", hours: "6:00 AM — 10:00 PM" },
+];
+
+type ClassRow = { name: string; day: string; time: string; instructor: string };
+type PricingTier = { id: string; name: string; price: string; description: string };
 
 export default function Home() {
   const { toast } = useToast();
@@ -29,6 +44,23 @@ export default function Home() {
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [registerForm, setRegisterForm] = useState(emptyRegisterForm);
   const [registerSubmitting, setRegisterSubmitting] = useState(false);
+  const [hours, setHours] = useState(DEFAULT_HOURS);
+  const [classes, setClasses] = useState<ClassRow[]>([]);
+  const [pricing, setPricing] = useState<PricingTier[]>([]);
+
+  useEffect(() => {
+    apiFetch("/api/content")
+      .then((data) => {
+        if (Array.isArray(data.content?.hours) && data.content.hours.length > 0) {
+          setHours(data.content.hours);
+        }
+        if (Array.isArray(data.content?.classes)) setClasses(data.content.classes);
+        if (Array.isArray(data.content?.pricing)) setPricing(data.content.pricing);
+      })
+      .catch(() => {
+        // Admin API unreachable — the page still works with default content.
+      });
+  }, []);
 
   async function submitForm(
     payload: Record<string, string>,
@@ -244,6 +276,79 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Class Timetable */}
+      {classes.length > 0 && (
+        <section id="timetable" className="py-24 bg-white">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-serif text-secondary mb-4 flex items-center justify-center gap-3">
+                <CalendarDays className="w-8 h-8 text-primary" /> Class Timetable
+              </h2>
+              <div className="w-24 h-2 bg-primary mx-auto"></div>
+            </div>
+            <motion.div
+              className="max-w-3xl mx-auto space-y-4"
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={staggerContainer}
+            >
+              {classes.map((cls, idx) => (
+                <motion.div
+                  key={idx}
+                  variants={itemVariant}
+                  className="flex flex-wrap justify-between items-center gap-2 py-4 px-6 bg-muted border-l-4 border-primary"
+                >
+                  <div>
+                    <p className="text-lg font-semibold text-secondary">{cls.name}</p>
+                    {cls.instructor && <p className="text-sm text-muted-foreground">with {cls.instructor}</p>}
+                  </div>
+                  <span className="text-accent font-medium">{cls.day} · {cls.time}</span>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+      )}
+
+      {/* Membership Pricing */}
+      {pricing.length > 0 && (
+        <section id="pricing" className="py-24 bg-muted">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-serif text-secondary mb-4 flex items-center justify-center gap-3">
+                <Tag className="w-8 h-8 text-primary" /> Membership Plans
+              </h2>
+              <div className="w-24 h-2 bg-primary mx-auto"></div>
+            </div>
+            <motion.div
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto"
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={staggerContainer}
+            >
+              {pricing.map((tier) => (
+                <motion.div key={tier.id} variants={itemVariant}>
+                  <Card className="h-full bg-white border-none shadow-lg text-center">
+                    <CardContent className="p-8 flex flex-col items-center">
+                      <h3 className="text-2xl font-serif text-secondary mb-2 uppercase">{tier.name}</h3>
+                      <p className="text-3xl font-bold text-primary mb-4">{tier.price}</p>
+                      <p className="text-muted-foreground mb-6">{tier.description}</p>
+                      <Link href="/register">
+                        <Button className="uppercase font-bold tracking-wider" data-testid={`pricing-cta-${tier.id}`}>
+                          Get Started
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+      )}
+
       {/* Club Hours */}
       <section id="hours" className="py-24 bg-muted">
         <div className="container mx-auto px-4 md:px-6">
@@ -262,15 +367,7 @@ export default function Home() {
             </motion.div>
 
             <motion.div variants={itemVariant} className="space-y-4">
-              {[
-                { day: "Monday", hours: "6:00 AM — 10:00 PM" },
-                { day: "Tuesday", hours: "6:00 AM — 10:00 PM" },
-                { day: "Wednesday", hours: "6:00 AM — 10:00 PM" },
-                { day: "Thursday", hours: "6:00 AM — 10:00 PM" },
-                { day: "Friday", hours: "6:00 AM — 10:00 PM" },
-                { day: "Saturday", hours: "6:00 AM — 10:00 PM" },
-                { day: "Sunday", hours: "6:00 AM — 10:00 PM" },
-              ].map((item, idx) => (
+              {hours.map((item, idx) => (
                 <div key={idx} className="flex justify-between items-center py-4 border-b border-border last:border-0">
                   <span className="text-lg font-semibold text-secondary">{item.day}</span>
                   <span className="text-lg text-accent font-medium">{item.hours}</span>
@@ -366,7 +463,14 @@ export default function Home() {
               className="relative z-10"
             >
               <motion.h2 variants={itemVariant} className="text-5xl font-serif mb-4 uppercase text-secondary">Join Us Today</motion.h2>
-              <motion.p variants={itemVariant} className="text-secondary/80 mb-10 text-lg font-medium">Ready to start? Sign up for a membership today.</motion.p>
+              <motion.p variants={itemVariant} className="text-secondary/80 mb-4 text-lg font-medium">Ready to start? Leave your details and we'll be in touch.</motion.p>
+              <motion.p variants={itemVariant} className="text-secondary/70 mb-10">
+                Prefer to set up your member login now?{" "}
+                <Link href="/register" className="text-primary font-semibold hover:underline">
+                  Create a full account
+                </Link>
+                .
+              </motion.p>
 
               <motion.form variants={itemVariant} className="space-y-6" onSubmit={handleRegisterSubmit}>
                 <div className="space-y-4">

@@ -2,8 +2,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { apiFetch } from "@/lib/api";
 
-const SLIDES = [
+type Slide = { image: string; title: string; subtitle: string };
+
+const DEFAULT_SLIDES: Slide[] = [
   {
     image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop",
     title: "Feel Better. Move Better.\nLive Stronger",
@@ -24,6 +27,19 @@ const SLIDES = [
 export default function HeroSlider() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [slides, setSlides] = useState<Slide[]>(DEFAULT_SLIDES);
+
+  useEffect(() => {
+    apiFetch("/api/content")
+      .then((data) => {
+        if (Array.isArray(data.content?.hero) && data.content.hero.length > 0) {
+          setSlides(data.content.hero);
+        }
+      })
+      .catch(() => {
+        // Admin API unreachable — keep the default slides so the site still works.
+      });
+  }, []);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -63,7 +79,7 @@ export default function HeroSlider() {
     <div className="relative w-full h-screen overflow-hidden group">
       <div className="overflow-hidden h-full" ref={emblaRef}>
         <div className="flex h-full">
-          {SLIDES.map((slide, index) => (
+          {slides.map((slide, index) => (
             <div key={index} className="relative flex-[0_0_100%] min-w-0 h-full">
               <img
                 src={slide.image}
@@ -110,7 +126,7 @@ export default function HeroSlider() {
       </button>
 
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-3">
-        {SLIDES.map((_, index) => (
+        {slides.map((_, index) => (
           <button
             key={index}
             className={`w-3 h-3 transition-colors ${

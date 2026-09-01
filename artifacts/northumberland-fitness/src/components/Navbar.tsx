@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, UserRound } from "lucide-react";
+import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
 import logoSrc from "@assets/northumberland_logo.png";
 
 
@@ -10,11 +12,14 @@ const NAV_LINKS = [
   { label: "Mission & Vision", id: "mission" },
   { label: "Programs", id: "programs" },
   { label: "Club Hours", id: "hours" },
+  { label: "Pricing", id: "pricing" },
   { label: "Contact", id: "contact" },
   { label: "Register", id: "register" },
 ];
 
 export default function Navbar() {
+  const { user } = useAuth();
+  const [location] = useLocation();
   const [activeSection, setActiveSection] = useState("home");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -50,6 +55,7 @@ export default function Navbar() {
 
   const handleNavClick = (id: string) => {
     setIsMobileMenuOpen(false);
+    if (location !== "/") return;
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
@@ -93,6 +99,14 @@ export default function Navbar() {
               {link.label}
             </button>
           ))}
+          <Link
+            href={user ? "/account" : "/login"}
+            className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-secondary hover:text-primary transition-colors duration-200"
+            data-testid="nav-link-account"
+          >
+            <UserRound size={18} />
+            {user ? "My Account" : "Login"}
+          </Link>
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -124,6 +138,15 @@ export default function Navbar() {
                 {link.label}
               </button>
             ))}
+            <Link
+              href={user ? "/account" : "/login"}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center gap-2 text-left text-base font-semibold uppercase tracking-wider text-secondary hover:text-primary transition-colors py-2"
+              data-testid="nav-mobile-link-account"
+            >
+              <UserRound size={18} />
+              {user ? "My Account" : "Login"}
+            </Link>
           </div>
         </div>
       )}
