@@ -23,7 +23,7 @@ export async function ensureAdmin() {
   const passwordHash = await bcrypt.hash(password, 10);
   await User.create({
     firstName: "Admin",
-    lastName: "",
+    lastName: "Account",
     email,
     passwordHash,
     sex: "prefer_not_to_say",
