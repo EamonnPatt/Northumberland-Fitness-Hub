@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import Navbar from "@/components/Navbar";
 import logoSrc from "@assets/northumberland_logo.png";
 
 const SEX_OPTIONS = [
@@ -74,7 +75,8 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-muted flex items-center justify-center px-4 py-16">
+    <div className="min-h-screen bg-muted flex items-center justify-center px-4 pt-32 pb-16">
+      <Navbar />
       <Card className="w-full max-w-lg border-none shadow-xl">
         <CardContent className="p-8">
           <div className="flex justify-center mb-6">
@@ -155,17 +157,6 @@ export default function Register() {
                 </SelectContent>
               </Select>
             </div>
-
-            <Select value={form.membership} onValueChange={(v) => set("membership", v)}>
-              <SelectTrigger className="h-12 rounded-none" data-testid="register-membership">
-                <SelectValue placeholder="Select Membership Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="basic">Basic - Access to gym floor</SelectItem>
-                <SelectItem value="premium">Premium - Gym floor & classes</SelectItem>
-                <SelectItem value="elite">Elite - All access + personal training</SelectItem>
-              </SelectContent>
-            </Select>
 
             <Button
               type="submit"

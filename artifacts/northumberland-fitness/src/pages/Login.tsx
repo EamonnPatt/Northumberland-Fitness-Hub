@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import Navbar from "@/components/Navbar";
 import logoSrc from "@assets/northumberland_logo.png";
 
 export default function Login() {
@@ -33,7 +34,8 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-muted flex items-center justify-center px-4 py-16">
+    <div className="min-h-screen bg-muted flex items-center justify-center px-4 pt-32 pb-16">
+      <Navbar />
       <Card className="w-full max-w-md border-none shadow-xl">
         <CardContent className="p-8">
           <div className="flex justify-center mb-6">

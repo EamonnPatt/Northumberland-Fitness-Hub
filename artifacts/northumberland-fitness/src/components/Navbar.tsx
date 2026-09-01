@@ -19,7 +19,7 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const { user } = useAuth();
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const [activeSection, setActiveSection] = useState("home");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -55,7 +55,13 @@ export default function Navbar() {
 
   const handleNavClick = (id: string) => {
     setIsMobileMenuOpen(false);
-    if (location !== "/") return;
+    if (location !== "/") {
+      navigate("/");
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      }, 150);
+      return;
+    }
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
