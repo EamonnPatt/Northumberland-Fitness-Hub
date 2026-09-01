@@ -16,7 +16,6 @@ import { Dumbbell, Activity, Users, HeartPulse, Clock, MapPin, Phone, Mail, Arro
 const CONTACT_ENDPOINT = `${import.meta.env.BASE_URL}contact.php`;
 
 const emptyContactForm = { name: "", email: "", message: "" };
-const emptyRegisterForm = { firstName: "", lastName: "", email: "", phone: "" };
 
 const DEFAULT_HOURS = [
   { day: "Monday", hours: "6:00 AM — 10:00 PM" },
@@ -35,8 +34,6 @@ export default function Home() {
   const { toast } = useToast();
   const [contactForm, setContactForm] = useState(emptyContactForm);
   const [contactSubmitting, setContactSubmitting] = useState(false);
-  const [registerForm, setRegisterForm] = useState(emptyRegisterForm);
-  const [registerSubmitting, setRegisterSubmitting] = useState(false);
   const [hours, setHours] = useState(DEFAULT_HOURS);
   const [classes, setClasses] = useState<ClassRow[]>([]);
   const [pricing, setPricing] = useState<PricingTier[]>([]);
@@ -90,15 +87,6 @@ export default function Home() {
       { type: "contact", ...contactForm },
       () => setContactForm(emptyContactForm),
       setContactSubmitting,
-    );
-  }
-
-  function handleRegisterSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    submitForm(
-      { type: "register", ...registerForm },
-      () => setRegisterForm(emptyRegisterForm),
-      setRegisterSubmitting,
     );
   }
 
@@ -456,54 +444,17 @@ export default function Home() {
               className="relative z-10"
             >
               <motion.h2 variants={itemVariant} className="text-5xl font-serif mb-4 uppercase text-secondary">Join Us Today</motion.h2>
-              <motion.p variants={itemVariant} className="text-secondary/80 mb-4 text-lg font-medium">Ready to start? Leave your details and we'll be in touch.</motion.p>
-              <motion.p variants={itemVariant} className="text-secondary/70 mb-10">
-                Prefer to set up your member login now?{" "}
-                <Link href="/register" className="text-primary font-semibold hover:underline">
-                  Create a full account
-                </Link>
-                .
+              <motion.p variants={itemVariant} className="text-secondary/70 mb-10 text-lg">
+                Create your member account to get started — it only takes a minute.
               </motion.p>
 
-              <motion.form variants={itemVariant} className="space-y-6" onSubmit={handleRegisterSubmit}>
-                <div className="space-y-4">
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <Input
-                      placeholder="First Name"
-                      required
-                      value={registerForm.firstName}
-                      onChange={(e) => setRegisterForm((f) => ({ ...f, firstName: e.target.value }))}
-                      className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg"
-                    />
-                    <Input
-                      placeholder="Last Name"
-                      required
-                      value={registerForm.lastName}
-                      onChange={(e) => setRegisterForm((f) => ({ ...f, lastName: e.target.value }))}
-                      className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg"
-                    />
-                  </div>
-                  <Input
-                    placeholder="Email Address"
-                    type="email"
-                    required
-                    value={registerForm.email}
-                    onChange={(e) => setRegisterForm((f) => ({ ...f, email: e.target.value }))}
-                    className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg"
-                  />
-                  <Input
-                    placeholder="Phone Number"
-                    type="tel"
-                    value={registerForm.phone}
-                    onChange={(e) => setRegisterForm((f) => ({ ...f, phone: e.target.value }))}
-                    className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg"
-                  />
-                </div>
-
-                <Button type="submit" disabled={registerSubmitting} size="lg" className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-none h-16 text-xl uppercase font-bold tracking-wider flex gap-2 items-center" data-testid="register-submit">
-                  {registerSubmitting ? "Submitting…" : <>Secure Your Spot <ArrowRight className="w-6 h-6" /></>}
-                </Button>
-              </motion.form>
+              <motion.div variants={itemVariant}>
+                <Link href="/register">
+                  <Button size="lg" className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-none h-16 text-xl uppercase font-bold tracking-wider flex gap-2 items-center" data-testid="register-cta">
+                    Create Your Account <ArrowRight className="w-6 h-6" />
+                  </Button>
+                </Link>
+              </motion.div>
             </motion.div>
           </div>
 
