@@ -8,13 +8,6 @@ import HeroSlider from "@/components/HeroSlider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiFetch } from "@/lib/api";
@@ -23,7 +16,7 @@ import { Dumbbell, Activity, Users, HeartPulse, Clock, MapPin, Phone, Mail, Arro
 const CONTACT_ENDPOINT = `${import.meta.env.BASE_URL}contact.php`;
 
 const emptyContactForm = { name: "", email: "", message: "" };
-const emptyRegisterForm = { firstName: "", lastName: "", email: "", phone: "", membership: "" };
+const emptyRegisterForm = { firstName: "", lastName: "", email: "", phone: "" };
 
 const DEFAULT_HOURS = [
   { day: "Monday", hours: "6:00 AM — 10:00 PM" },
@@ -505,20 +498,6 @@ export default function Home() {
                     onChange={(e) => setRegisterForm((f) => ({ ...f, phone: e.target.value }))}
                     className="bg-muted border-secondary/30 text-secondary placeholder:text-secondary/50 h-14 rounded-none focus-visible:ring-secondary text-lg"
                   />
-
-                  <Select
-                    value={registerForm.membership}
-                    onValueChange={(value) => setRegisterForm((f) => ({ ...f, membership: value }))}
-                  >
-                    <SelectTrigger className="bg-muted border-secondary/30 text-secondary h-14 rounded-none focus:ring-secondary text-lg">
-                      <SelectValue placeholder="Select Membership Type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="basic">Basic - Access to gym floor</SelectItem>
-                      <SelectItem value="premium">Premium - Gym floor & classes</SelectItem>
-                      <SelectItem value="elite">Elite - All access + personal training</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
 
                 <Button type="submit" disabled={registerSubmitting} size="lg" className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-none h-16 text-xl uppercase font-bold tracking-wider flex gap-2 items-center" data-testid="register-submit">

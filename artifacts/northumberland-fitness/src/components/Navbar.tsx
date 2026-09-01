@@ -111,7 +111,7 @@ export default function Navbar() {
             data-testid="nav-link-account"
           >
             <UserRound size={18} />
-            {user ? "My Account" : "Login"}
+            {user ? user.firstName : "Login"}
           </Link>
         </div>
 
