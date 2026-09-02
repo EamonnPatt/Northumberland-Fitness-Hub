@@ -7,14 +7,25 @@ import { requireAuth } from "../middleware/auth.js";
 
 const router = Router();
 
-const authLimiter = rateLimit({
+const registerLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 20,
   standardHeaders: true,
   legacyHeaders: false,
 });
 
-router.post("/register", authLimiter, async (req, res) => {
+// Only failed attempts count, so legitimate members retrying a mistyped
+// password (or several people on the same gym wifi) don't get locked out.
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  message: { ok: false, message: "Too many login attempts. Please try again in a few minutes." },
+});
+
+router.post("/register", registerLimiter, async (req, res) => {
   const { firstName, lastName, email, password, phone, membership, sex, ageRange } = req.body || {};
 
   if (!firstName || !lastName || !email || !password || !sex) {
@@ -55,7 +66,7 @@ router.post("/register", authLimiter, async (req, res) => {
   res.status(201).json({ ok: true, token, user });
 });
 
-router.post("/login", authLimiter, async (req, res) => {
+router.post("/login", loginLimiter, async (req, res) => {
   const { email, password } = req.body || {};
   if (!email || !password) {
     return res.status(422).json({ ok: false, message: "Email and password are required." });

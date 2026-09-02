@@ -13,6 +13,7 @@ const allowedOrigins = (process.env.CLIENT_ORIGIN || "")
   .filter(Boolean);
 
 const app = express();
+app.set("trust proxy", 1);
 app.use(
   cors({
     origin(origin, callback) {
