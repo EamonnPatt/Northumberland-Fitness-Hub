@@ -55,6 +55,10 @@ export default function Navbar() {
 
   const handleNavClick = (id: string) => {
     setIsMobileMenuOpen(false);
+    if (id === "register") {
+      navigate("/register");
+      return;
+    }
     if (location !== "/") {
       navigate("/");
       setTimeout(() => {
@@ -151,7 +155,7 @@ export default function Navbar() {
               data-testid="nav-mobile-link-account"
             >
               <UserRound size={18} />
-              {user ? "My Account" : "Login"}
+              {user ? user.firstName : "Login"}
             </Link>
           </div>
         </div>
