@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { IS_ADMIN_SITE } from "@/lib/site-mode";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -13,7 +14,21 @@ import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
 
-function Router() {
+function AdminRouter() {
+  return (
+    <Switch>
+      <Route path="/login" component={Login} />
+      <Route path="/">
+        <ProtectedRoute requireAdmin deniedRedirect="/login">
+          <Admin />
+        </ProtectedRoute>
+      </Route>
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
+function MemberRouter() {
   return (
     <Switch>
       <Route path="/" component={Home} />
@@ -24,14 +39,13 @@ function Router() {
           <Account />
         </ProtectedRoute>
       </Route>
-      <Route path="/admin">
-        <ProtectedRoute requireAdmin>
-          <Admin />
-        </ProtectedRoute>
-      </Route>
       <Route component={NotFound} />
     </Switch>
   );
+}
+
+function Router() {
+  return IS_ADMIN_SITE ? <AdminRouter /> : <MemberRouter />;
 }
 
 function App() {

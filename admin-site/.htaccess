@@ -1,0 +1,22 @@
+# Re-open access to this folder. The repo root's .htaccess denies direct
+# access to /admin-site (it should only be reachable through the
+# admin.northumberlandfitness.com subdomain, whose document root points
+# here); this file makes this folder itself servable once that vhost's
+# document root is set to it.
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Allow from all
+</IfModule>
+
+RewriteEngine On
+
+# Serve real files and directories as-is.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Everything else falls back to the SPA entry point.
+RewriteRule ^ index.html [L]

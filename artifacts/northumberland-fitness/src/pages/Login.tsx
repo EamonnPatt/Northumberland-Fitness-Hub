@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
+import { cn } from "@/lib/utils";
+import { IS_ADMIN_SITE } from "@/lib/site-mode";
 import logoSrc from "@assets/northumberland_logo.png";
 
 export default function Login() {
@@ -21,7 +23,7 @@ export default function Login() {
     setSubmitting(true);
     try {
       await login(email, password);
-      navigate("/account");
+      navigate(IS_ADMIN_SITE ? "/" : "/account");
     } catch (err) {
       toast({
         title: "Couldn't sign in",
@@ -34,14 +36,21 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-muted flex items-center justify-center px-4 pt-32 pb-16">
-      <Navbar />
+    <div
+      className={cn(
+        "min-h-screen bg-muted flex items-center justify-center px-4 pb-16",
+        IS_ADMIN_SITE ? "pt-16" : "pt-32",
+      )}
+    >
+      {!IS_ADMIN_SITE && <Navbar />}
       <Card className="w-full max-w-md border-none shadow-xl">
         <CardContent className="p-8">
           <div className="flex justify-center mb-6">
             <img src={logoSrc} alt="Northumberland Fitness logo" style={{ width: "140px", height: "auto" }} />
           </div>
-          <h1 className="text-3xl font-serif text-secondary text-center mb-8">Member Login</h1>
+          <h1 className="text-3xl font-serif text-secondary text-center mb-8">
+            {IS_ADMIN_SITE ? "Admin Login" : "Member Login"}
+          </h1>
           <form className="space-y-4" onSubmit={handleSubmit}>
             <Input
               placeholder="Email Address"
@@ -70,17 +79,21 @@ export default function Login() {
               {submitting ? "Signing in…" : "Sign In"}
             </Button>
           </form>
-          <p className="text-center text-sm text-muted-foreground mt-6">
-            Don't have an account?{" "}
-            <Link href="/register" className="text-primary font-semibold hover:underline">
-              Join now
-            </Link>
-          </p>
-          <p className="text-center text-sm mt-2">
-            <Link href="/" className="text-muted-foreground hover:underline">
-              Back to site
-            </Link>
-          </p>
+          {!IS_ADMIN_SITE && (
+            <>
+              <p className="text-center text-sm text-muted-foreground mt-6">
+                Don't have an account?{" "}
+                <Link href="/register" className="text-primary font-semibold hover:underline">
+                  Join now
+                </Link>
+              </p>
+              <p className="text-center text-sm mt-2">
+                <Link href="/" className="text-muted-foreground hover:underline">
+                  Back to site
+                </Link>
+              </p>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>

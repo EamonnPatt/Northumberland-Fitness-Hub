@@ -7,7 +7,7 @@
 RewriteEngine On
 
 RewriteRule ^(package(-lock)?\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|tsconfig(\.base)?\.json|replit\.md|\.replit.*|\.npmrc|\.gitignore|\.gitattributes|\.htaccess)$ - [F,L]
-RewriteRule ^(lib|scripts|attached_assets|artifacts|node_modules|\.git)(/.*)?$ - [F,L]
+RewriteRule ^(lib|scripts|attached_assets|artifacts|node_modules|server|admin-site|\.git)(/.*)?$ - [F,L]
 
 # Serve real files and directories as-is.
 RewriteCond %{REQUEST_FILENAME} -f [OR]

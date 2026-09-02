@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
+import AdminHeader from "@/components/AdminHeader";
 import { apiFetch } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -115,8 +115,8 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-muted">
-      <Navbar />
-      <div className="pt-32 pb-24 container mx-auto px-4 md:px-6">
+      <AdminHeader />
+      <div className="py-12 container mx-auto px-4 md:px-6">
         <h1 className="text-4xl font-serif text-secondary mb-8">Admin Panel</h1>
 
         <Tabs defaultValue="hours">

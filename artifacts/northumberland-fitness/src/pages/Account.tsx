@@ -54,20 +54,6 @@ export default function Account() {
             )}
           </CardContent>
         </Card>
-
-        {user.role === "admin" && (
-          <Card className="border-none shadow-lg">
-            <CardContent className="p-8 flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-serif text-secondary mb-1">Admin Panel</h2>
-                <p className="text-muted-foreground text-sm">Edit site content and manage members.</p>
-              </div>
-              <Button onClick={() => navigate("/admin")} data-testid="go-to-admin">
-                Open Admin Panel
-              </Button>
-            </CardContent>
-          </Card>
-        )}
       </div>
     </div>
   );

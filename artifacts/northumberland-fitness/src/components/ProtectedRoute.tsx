@@ -6,9 +6,11 @@ import { Spinner } from "@/components/ui/spinner";
 export function ProtectedRoute({
   children,
   requireAdmin = false,
+  deniedRedirect = "/account",
 }: {
   children: React.ReactNode;
   requireAdmin?: boolean;
+  deniedRedirect?: string;
 }) {
   const { user, loading } = useAuth();
 
@@ -21,7 +23,7 @@ export function ProtectedRoute({
   }
 
   if (!user) return <Redirect to="/login" />;
-  if (requireAdmin && user.role !== "admin") return <Redirect to="/account" />;
+  if (requireAdmin && user.role !== "admin") return <Redirect to={deniedRedirect} />;
 
   return <>{children}</>;
 }
