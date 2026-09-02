@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import logoSrc from "@assets/northumberland_logo.png";
 
 import { motion } from "framer-motion";
@@ -32,6 +32,7 @@ type PricingTier = { id: string; name: string; price: string; description: strin
 
 export default function Home() {
   const { toast } = useToast();
+  const [, navigate] = useLocation();
   const [contactForm, setContactForm] = useState(emptyContactForm);
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [hours, setHours] = useState(DEFAULT_HOURS);
@@ -449,11 +450,14 @@ export default function Home() {
               </motion.p>
 
               <motion.div variants={itemVariant}>
-                <Link href="/register">
-                  <Button size="lg" className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-none h-16 text-xl uppercase font-bold tracking-wider flex gap-2 items-center" data-testid="register-cta">
-                    Create Your Account <ArrowRight className="w-6 h-6" />
-                  </Button>
-                </Link>
+                <Button
+                  size="lg"
+                  onClick={() => navigate("/register")}
+                  className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-none h-16 text-xl uppercase font-bold tracking-wider flex gap-2 items-center"
+                  data-testid="register-cta"
+                >
+                  Create an Account <ArrowRight className="w-6 h-6" />
+                </Button>
               </motion.div>
             </motion.div>
           </div>
