@@ -400,7 +400,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-bold uppercase text-sm text-white/60">Email</h4>
-                    <p>info@northumberlandfitness.com</p>
+                    <p>contact@northumberlandfitness.com</p>
                   </div>
                 </div>
               </motion.div>

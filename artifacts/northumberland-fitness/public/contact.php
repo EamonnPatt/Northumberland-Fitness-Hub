@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 header('Content-Type: application/json');
 
-const DESTINATION_EMAIL = 'info@northumberlandfitness.com';
+const DESTINATION_EMAIL = 'contact@northumberlandfitness.com';
 
 function respond(bool $ok, string $message, int $status = 200): void {
     http_response_code($status);
