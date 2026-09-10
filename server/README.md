@@ -1,4 +1,6 @@
 a# Northumberland Fitness API
+https://northumberland-fitness-hub.onrender.com/ # backend
+
 
 Express + MongoDB backend for member accounts, login, and the admin content
 panel. This is a separate Node app from the static site — it does **not**
