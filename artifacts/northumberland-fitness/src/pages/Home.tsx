@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "wouter";
-import logoSrc from "@assets/northumberland_logo.png";
+import { useLocation } from "wouter";
+import { MEMBER_ACCOUNTS_ENABLED } from "@/lib/site-mode";
 
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -28,7 +28,30 @@ const DEFAULT_HOURS = [
 ];
 
 type ClassRow = { name: string; day: string; time: string; instructor: string };
-type PricingTier = { id: string; name: string; price: string; description: string };
+
+const FLIIP_BUY_URL = "https://northumberland.fliipapp.com/user/register/buy_membership/1";
+
+// Prices are before 13% HST; FLiiP adds tax at checkout.
+const MEMBERSHIP_GROUPS = [
+  {
+    title: "Regular Memberships",
+    tiers: [
+      { id: "basic", name: "Basic", price: "20.00", description: "Classes only", fliipId: "70696" },
+      { id: "premium", name: "Premium", price: "45.00", description: "Gym access (no classes)", fliipId: "70697" },
+      { id: "elite", name: "Elite", price: "59.95", description: "Full access — gym and classes", fliipId: "70698" },
+    ],
+  },
+  {
+    title: "Hometown Heroes",
+    description:
+      "For firefighters, police officers, nurses and other front-line heroes. Requires approval on site — and the $45 annual fee is waived.",
+    tiers: [
+      { id: "heroes-basic", name: "Hometown Heroes Basic", price: "20.00", description: "Classes only", fliipId: "70964" },
+      { id: "heroes-premium", name: "Hometown Heroes Premium", price: "45.00", description: "Gym access (no classes)", fliipId: "71031" },
+      { id: "heroes-elite", name: "Hometown Heroes Elite", price: "59.95", description: "Full access — gym and classes", fliipId: "71033" },
+    ],
+  },
+];
 
 export default function Home() {
   const { toast } = useToast();
@@ -37,7 +60,6 @@ export default function Home() {
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [hours, setHours] = useState(DEFAULT_HOURS);
   const [classes, setClasses] = useState<ClassRow[]>([]);
-  const [pricing, setPricing] = useState<PricingTier[]>([]);
 
   useEffect(() => {
     apiFetch("/api/content")
@@ -46,7 +68,6 @@ export default function Home() {
           setHours(data.content.hours);
         }
         if (Array.isArray(data.content?.classes)) setClasses(data.content.classes);
-        if (Array.isArray(data.content?.pricing)) setPricing(data.content.pricing);
       })
       .catch(() => {
         // Admin API unreachable — the page still works with default content.
@@ -294,42 +315,50 @@ export default function Home() {
       )}
 
       {/* Membership Pricing */}
-      {pricing.length > 0 && (
-        <section id="pricing" className="py-24 bg-muted">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-serif text-secondary mb-4 flex items-center justify-center gap-3">
-                <Tag className="w-8 h-8 text-primary" /> Membership Plans
-              </h2>
-              <div className="w-24 h-2 bg-primary mx-auto"></div>
-            </div>
-            <motion.div
-              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto"
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, margin: "-100px" }}
-              variants={staggerContainer}
-            >
-              {pricing.map((tier) => (
-                <motion.div key={tier.id} variants={itemVariant}>
-                  <Card className="h-full bg-white border-none shadow-lg text-center">
-                    <CardContent className="p-8 flex flex-col items-center">
-                      <h3 className="text-2xl font-serif text-secondary mb-2 uppercase">{tier.name}</h3>
-                      <p className="text-3xl font-bold text-primary mb-4">{tier.price}</p>
-                      <p className="text-muted-foreground mb-6">{tier.description}</p>
-                      <Link href="/register">
-                        <Button className="uppercase font-bold tracking-wider" data-testid={`pricing-cta-${tier.id}`}>
-                          Get Started
-                        </Button>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </motion.div>
+      <section id="pricing" className="py-24 bg-muted">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-serif text-secondary mb-4 flex items-center justify-center gap-3">
+              <Tag className="w-8 h-8 text-primary" /> Membership Plans
+            </h2>
+            <div className="w-24 h-2 bg-primary mx-auto mb-6"></div>
+            <p className="text-muted-foreground">Monthly, auto-renewing. Prices shown before 13% HST.</p>
           </div>
-        </section>
-      )}
+          {MEMBERSHIP_GROUPS.map((group) => (
+            <div key={group.title} className="mb-16 last:mb-0">
+              <h3 className="text-2xl md:text-3xl font-serif text-secondary text-center mb-8 uppercase">{group.title}</h3>
+              {group.description && (
+                <p className="text-muted-foreground text-center max-w-2xl mx-auto -mt-4 mb-8">{group.description}</p>
+              )}
+              <motion.div
+                className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto"
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: "-100px" }}
+                variants={staggerContainer}
+              >
+                {group.tiers.map((tier) => (
+                  <motion.div key={tier.id} variants={itemVariant}>
+                    <Card className="h-full bg-white border-none shadow-lg text-center">
+                      <CardContent className="p-8 flex flex-col items-center h-full">
+                        <h4 className="text-2xl font-serif text-secondary mb-2 uppercase">{tier.name}</h4>
+                        <p className="text-3xl font-bold text-primary mb-1">${tier.price}</p>
+                        <p className="text-sm text-muted-foreground mb-4">per month + HST</p>
+                        <p className="text-muted-foreground mb-6 flex-1">{tier.description}</p>
+                        <Button asChild className="uppercase font-bold tracking-wider" data-testid={`pricing-cta-${tier.id}`}>
+                          <a href={`${FLIIP_BUY_URL}/${tier.fliipId}`} target="_blank" rel="noopener noreferrer">
+                            Buy Membership
+                          </a>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Club Hours */}
       <section id="hours" className="py-24 bg-muted">
@@ -446,17 +475,23 @@ export default function Home() {
             >
               <motion.h2 variants={itemVariant} className="text-5xl font-serif mb-4 uppercase text-secondary">Join Us Today</motion.h2>
               <motion.p variants={itemVariant} className="text-secondary/70 mb-10 text-lg">
-                Create your member account to get started — it only takes a minute.
+                {MEMBER_ACCOUNTS_ENABLED
+                  ? "Create your member account to get started — it only takes a minute."
+                  : "Pick the membership that fits you and sign up online in minutes."}
               </motion.p>
 
               <motion.div variants={itemVariant}>
                 <Button
                   size="lg"
-                  onClick={() => navigate("/register")}
+                  onClick={() =>
+                    MEMBER_ACCOUNTS_ENABLED
+                      ? navigate("/register")
+                      : document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })
+                  }
                   className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-none h-16 text-xl uppercase font-bold tracking-wider flex gap-2 items-center"
                   data-testid="register-cta"
                 >
-                  Create an Account <ArrowRight className="w-6 h-6" />
+                  {MEMBER_ACCOUNTS_ENABLED ? "Create an Account" : "View Memberships"} <ArrowRight className="w-6 h-6" />
                 </Button>
               </motion.div>
             </motion.div>

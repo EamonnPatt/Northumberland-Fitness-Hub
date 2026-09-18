@@ -97,7 +97,7 @@ export default function HeroSlider() {
                   <Button 
                     size="lg" 
                     className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 py-6 uppercase font-bold animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300"
-                    onClick={() => document.getElementById("register")?.scrollIntoView({ behavior: "smooth" })}
+                    onClick={() => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })}
                     data-testid={`hero-cta-${index}`}
                   >
                     Join Us Today

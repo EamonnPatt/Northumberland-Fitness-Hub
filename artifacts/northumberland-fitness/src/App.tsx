@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { IS_ADMIN_SITE } from "@/lib/site-mode";
+import { IS_ADMIN_SITE, MEMBER_ACCOUNTS_ENABLED } from "@/lib/site-mode";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -32,13 +32,15 @@ function MemberRouter() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/login" component={Login} />
-      <Route path="/register" component={Register} />
-      <Route path="/account">
-        <ProtectedRoute>
-          <Account />
-        </ProtectedRoute>
-      </Route>
+      {MEMBER_ACCOUNTS_ENABLED && <Route path="/login" component={Login} />}
+      {MEMBER_ACCOUNTS_ENABLED && <Route path="/register" component={Register} />}
+      {MEMBER_ACCOUNTS_ENABLED && (
+        <Route path="/account">
+          <ProtectedRoute>
+            <Account />
+          </ProtectedRoute>
+        </Route>
+      )}
       <Route component={NotFound} />
     </Switch>
   );
