@@ -36,7 +36,6 @@ const MEMBERSHIP_GROUPS = [
   {
     title: "Regular Memberships",
     tiers: [
-      { id: "basic", name: "Basic", price: "20.00", description: "Classes only", fliipId: "70696" },
       { id: "premium", name: "Premium", price: "45.00", description: "Gym access (no classes)", fliipId: "70697" },
       { id: "elite", name: "Elite", price: "59.95", description: "Full access — gym and classes", fliipId: "70698" },
     ],
@@ -46,7 +45,6 @@ const MEMBERSHIP_GROUPS = [
     description:
       "For firefighters, police officers, nurses and other front-line heroes. Requires approval on site — and the $45 annual fee is waived.",
     tiers: [
-      { id: "heroes-basic", name: "Hometown Heroes Basic", price: "20.00", description: "Classes only", fliipId: "70964" },
       { id: "heroes-premium", name: "Hometown Heroes Premium", price: "45.00", description: "Gym access (no classes)", fliipId: "71031" },
       { id: "heroes-elite", name: "Hometown Heroes Elite", price: "59.95", description: "Full access — gym and classes", fliipId: "71033" },
     ],
@@ -331,7 +329,7 @@ export default function Home() {
                 <p className="text-muted-foreground text-center max-w-2xl mx-auto -mt-4 mb-8">{group.description}</p>
               )}
               <motion.div
-                className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto"
+                className="grid sm:grid-cols-2 gap-8 max-w-3xl mx-auto"
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, margin: "-100px" }}
