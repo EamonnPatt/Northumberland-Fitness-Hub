@@ -42,6 +42,8 @@ const MEMBERSHIP_GROUPS = [
   },
   {
     title: "Hometown Heroes",
+    // Set to false to show this group on the site again.
+    hidden: true,
     description:
       "For firefighters, police officers, nurses and other front-line heroes. Requires approval on site — and the $45 annual fee is waived.",
     tiers: [
@@ -322,7 +324,7 @@ export default function Home() {
             <div className="w-24 h-2 bg-primary mx-auto mb-6"></div>
             <p className="text-muted-foreground">Monthly, auto-renewing. Prices shown before 13% HST.</p>
           </div>
-          {MEMBERSHIP_GROUPS.map((group) => (
+          {MEMBERSHIP_GROUPS.filter((group) => !group.hidden).map((group) => (
             <div key={group.title} className="mb-16 last:mb-0">
               <h3 className="text-2xl md:text-3xl font-serif text-secondary text-center mb-8 uppercase">{group.title}</h3>
               {group.description && (
