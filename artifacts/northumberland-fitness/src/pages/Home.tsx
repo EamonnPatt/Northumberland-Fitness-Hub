@@ -38,6 +38,8 @@ const MEMBERSHIP_GROUPS = [
     tiers: [
       { id: "premium", name: "Premium", price: "45.00", description: "Gym access (no classes)", fliipId: "70697" },
       { id: "elite", name: "Elite", price: "59.95", description: "Full access — gym and classes", fliipId: "70698" },
+      { id: "premium-sweat-hearts", name: "Premium Sweat Hearts", price: "90.00", description: "Gym access for two (no classes)", fliipId: "71505" },
+      { id: "elite-sweat-hearts", name: "Elite Sweat Hearts", price: "119.90", description: "Full access for two — gym and classes", fliipId: "71508" },
     ],
   },
   {
