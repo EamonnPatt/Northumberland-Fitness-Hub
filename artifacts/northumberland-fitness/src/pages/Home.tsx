@@ -31,8 +31,8 @@ type ClassRow = { name: string; day: string; time: string; instructor: string };
 
 const FLIIP_BUY_URL = "https://northumberland.fliipapp.com/user/register/buy_membership/1";
 
-// The annual fee normally charged on top of a membership. It's currently
-// waived on every plan, which the pricing section calls out.
+// Charged once a year on top of the monthly price, unless a tier sets
+// annualFeeWaived.
 const ANNUAL_FEE = "45";
 
 // Prices are before 13% HST; FLiiP adds tax at checkout.
@@ -47,8 +47,16 @@ const MEMBERSHIP_GROUPS = [
   },
   {
     title: "Couples Memberships",
+    description: `Couples memberships come with the $${ANNUAL_FEE} annual fee waived.`,
     tiers: [
-      { id: "sweat-hearts", name: "Sweat Hearts", price: "120.00", description: "Full access for two — gym and classes", fliipId: "71508" },
+      {
+        id: "sweat-hearts",
+        name: "Sweat Hearts",
+        price: "120.00",
+        description: "Full access for two — gym and classes",
+        fliipId: "71508",
+        annualFeeWaived: true,
+      },
     ],
   },
   {
@@ -58,8 +66,8 @@ const MEMBERSHIP_GROUPS = [
     description:
       "For firefighters, police officers, nurses and other front-line heroes. Requires approval on site — and the $45 annual fee is waived.",
     tiers: [
-      { id: "heroes-premium", name: "Hometown Heroes Premium", price: "45.00", description: "Gym access (no classes)", fliipId: "71031" },
-      { id: "heroes-elite", name: "Hometown Heroes Elite", price: "59.95", description: "Full access — gym and classes", fliipId: "71033" },
+      { id: "heroes-premium", name: "Hometown Heroes Premium", price: "45.00", description: "Gym access (no classes)", fliipId: "71031", annualFeeWaived: true },
+      { id: "heroes-elite", name: "Hometown Heroes Elite", price: "59.95", description: "Full access — gym and classes", fliipId: "71033", annualFeeWaived: true },
     ],
   },
 ];
@@ -334,15 +342,6 @@ export default function Home() {
             </h2>
             <div className="w-24 h-2 bg-primary mx-auto mb-6"></div>
             <p className="text-muted-foreground">Monthly, auto-renewing. Prices shown before 13% HST.</p>
-            <div
-              className="inline-block mt-6 bg-primary text-primary-foreground px-6 py-3 shadow-lg"
-              data-testid="annual-fee-waived-banner"
-            >
-              <p className="text-lg md:text-xl font-bold uppercase tracking-wider">
-                ${ANNUAL_FEE} Annual Fee Waived
-              </p>
-              <p className="text-sm opacity-90">On every membership — no annual fee, just your monthly rate.</p>
-            </div>
           </div>
           {MEMBERSHIP_GROUPS.filter((group) => !group.hidden).map((group) => (
             <div key={group.title} className="mb-16 last:mb-0">
@@ -364,10 +363,16 @@ export default function Home() {
                         <h4 className="text-2xl font-serif text-secondary mb-2 uppercase">{tier.name}</h4>
                         <p className="text-3xl font-bold text-primary mb-1">${tier.price}</p>
                         <p className="text-sm text-muted-foreground mb-2">per month + HST</p>
-                        <p className="text-sm mb-4">
-                          <span className="line-through text-muted-foreground">${ANNUAL_FEE} annual fee</span>{" "}
-                          <span className="font-bold text-primary uppercase">Waived</span>
-                        </p>
+                        {"annualFeeWaived" in tier && tier.annualFeeWaived ? (
+                          <p className="text-sm mb-4" data-testid={`annual-fee-${tier.id}`}>
+                            <span className="line-through text-muted-foreground">${ANNUAL_FEE} annual fee</span>{" "}
+                            <span className="font-bold text-primary uppercase">Waived</span>
+                          </p>
+                        ) : (
+                          <p className="text-sm text-muted-foreground mb-4" data-testid={`annual-fee-${tier.id}`}>
+                            + ${ANNUAL_FEE} annual fee
+                          </p>
+                        )}
                         <p className="text-muted-foreground mb-6 flex-1">{tier.description}</p>
                         {tier.fliipId ? (
                           <Button asChild className="uppercase font-bold tracking-wider" data-testid={`pricing-cta-${tier.id}`}>
