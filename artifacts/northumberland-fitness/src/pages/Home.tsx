@@ -18,13 +18,13 @@ const CONTACT_ENDPOINT = `${import.meta.env.BASE_URL}contact.php`;
 const emptyContactForm = { name: "", email: "", message: "" };
 
 const DEFAULT_HOURS = [
-  { day: "Monday", hours: "6:00 AM — 10:00 PM" },
-  { day: "Tuesday", hours: "6:00 AM — 10:00 PM" },
-  { day: "Wednesday", hours: "6:00 AM — 10:00 PM" },
-  { day: "Thursday", hours: "6:00 AM — 10:00 PM" },
-  { day: "Friday", hours: "6:00 AM — 10:00 PM" },
-  { day: "Saturday", hours: "6:00 AM — 10:00 PM" },
-  { day: "Sunday", hours: "6:00 AM — 10:00 PM" },
+  { day: "Monday", hours: "5:00 AM — 10:00 PM" },
+  { day: "Tuesday", hours: "5:00 AM — 10:00 PM" },
+  { day: "Wednesday", hours: "5:00 AM — 10:00 PM" },
+  { day: "Thursday", hours: "5:00 AM — 10:00 PM" },
+  { day: "Friday", hours: "5:00 AM — 10:00 PM" },
+  { day: "Saturday", hours: "5:00 AM — 10:00 PM" },
+  { day: "Sunday", hours: "5:00 AM — 10:00 PM" },
 ];
 
 type ClassRow = { name: string; day: string; time: string; instructor: string };
@@ -34,12 +34,19 @@ const FLIIP_BUY_URL = "https://northumberland.fliipapp.com/user/register/buy_mem
 // Prices are before 13% HST; FLiiP adds tax at checkout.
 const MEMBERSHIP_GROUPS = [
   {
-    title: "Regular Memberships",
+    title: "Memberships",
     tiers: [
-      { id: "premium", name: "Premium", price: "45.00", description: "Gym access (no classes)", fliipId: "70697" },
-      { id: "elite", name: "Elite", price: "59.95", description: "Full access — gym and classes", fliipId: "70698" },
-      { id: "premium-sweat-hearts", name: "Premium Sweat Hearts", price: "90.00", description: "Gym access for two (no classes)", fliipId: "71505" },
-      { id: "elite-sweat-hearts", name: "Elite Sweat Hearts", price: "119.90", description: "Full access for two — gym and classes", fliipId: "71508" },
+      // Add each fliipId once the FLiiP payment link is ready; until then the button shows "Coming Soon".
+      { id: "under-30", name: "Under 30", price: "30.00", description: "Full access for members under 30", fliipId: "" },
+      { id: "adult", name: "Adult (30-64)", price: "60.00", description: "Full access for members aged 30 to 64", fliipId: "" },
+      { id: "senior", name: "Senior (65+)", price: "45.00", description: "Full access for members aged 65 and over", fliipId: "" },
+      { id: "group", name: "Group", price: "149.00", description: "Up to 5 people, billed to one person", fliipId: "" },
+    ],
+  },
+  {
+    title: "Couples Memberships",
+    tiers: [
+      { id: "sweat-hearts", name: "Sweat Hearts", price: "119.90", description: "Full access for two — gym and classes", fliipId: "71508" },
     ],
   },
   {
@@ -333,7 +340,7 @@ export default function Home() {
                 <p className="text-muted-foreground text-center max-w-2xl mx-auto -mt-4 mb-8">{group.description}</p>
               )}
               <motion.div
-                className="grid sm:grid-cols-2 gap-8 max-w-3xl mx-auto"
+                className={`grid gap-8 mx-auto ${group.tiers.length === 1 ? "max-w-sm" : "sm:grid-cols-2 max-w-3xl"}`}
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, margin: "-100px" }}
@@ -347,11 +354,17 @@ export default function Home() {
                         <p className="text-3xl font-bold text-primary mb-1">${tier.price}</p>
                         <p className="text-sm text-muted-foreground mb-4">per month + HST</p>
                         <p className="text-muted-foreground mb-6 flex-1">{tier.description}</p>
-                        <Button asChild className="uppercase font-bold tracking-wider" data-testid={`pricing-cta-${tier.id}`}>
-                          <a href={`${FLIIP_BUY_URL}/${tier.fliipId}`} target="_blank" rel="noopener noreferrer">
-                            Buy Membership
-                          </a>
-                        </Button>
+                        {tier.fliipId ? (
+                          <Button asChild className="uppercase font-bold tracking-wider" data-testid={`pricing-cta-${tier.id}`}>
+                            <a href={`${FLIIP_BUY_URL}/${tier.fliipId}`} target="_blank" rel="noopener noreferrer">
+                              Buy Membership
+                            </a>
+                          </Button>
+                        ) : (
+                          <Button disabled className="uppercase font-bold tracking-wider" data-testid={`pricing-cta-${tier.id}`}>
+                            Coming Soon
+                          </Button>
+                        )}
                       </CardContent>
                     </Card>
                   </motion.div>
