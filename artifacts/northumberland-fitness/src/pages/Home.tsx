@@ -31,22 +31,24 @@ type ClassRow = { name: string; day: string; time: string; instructor: string };
 
 const FLIIP_BUY_URL = "https://northumberland.fliipapp.com/user/register/buy_membership/1";
 
+// The annual fee normally charged on top of a membership. It's currently
+// waived on every plan, which the pricing section calls out.
+const ANNUAL_FEE = "45";
+
 // Prices are before 13% HST; FLiiP adds tax at checkout.
 const MEMBERSHIP_GROUPS = [
   {
     title: "Memberships",
     tiers: [
       // Add each fliipId once the FLiiP payment link is ready; until then the button shows "Coming Soon".
-      { id: "under-30", name: "Under 30", price: "30.00", description: "Full access for members under 30", fliipId: "" },
-      { id: "adult", name: "Adult (30-64)", price: "60.00", description: "Full access for members aged 30 to 64", fliipId: "" },
-      { id: "senior", name: "Senior (65+)", price: "45.00", description: "Full access for members aged 65 and over", fliipId: "" },
-      { id: "group", name: "Group", price: "149.00", description: "Up to 5 people, billed to one person", fliipId: "" },
+      { id: "regular", name: "Regular", price: "60.00", description: "Full access for one member", fliipId: "" },
+      { id: "group", name: "Group", price: "225.00", description: "Up to 5 people, billed to one person", fliipId: "" },
     ],
   },
   {
     title: "Couples Memberships",
     tiers: [
-      { id: "sweat-hearts", name: "Sweat Hearts", price: "119.90", description: "Full access for two — gym and classes", fliipId: "71508" },
+      { id: "sweat-hearts", name: "Sweat Hearts", price: "120.00", description: "Full access for two — gym and classes", fliipId: "71508" },
     ],
   },
   {
@@ -332,6 +334,15 @@ export default function Home() {
             </h2>
             <div className="w-24 h-2 bg-primary mx-auto mb-6"></div>
             <p className="text-muted-foreground">Monthly, auto-renewing. Prices shown before 13% HST.</p>
+            <div
+              className="inline-block mt-6 bg-primary text-primary-foreground px-6 py-3 shadow-lg"
+              data-testid="annual-fee-waived-banner"
+            >
+              <p className="text-lg md:text-xl font-bold uppercase tracking-wider">
+                ${ANNUAL_FEE} Annual Fee Waived
+              </p>
+              <p className="text-sm opacity-90">On every membership — no annual fee, just your monthly rate.</p>
+            </div>
           </div>
           {MEMBERSHIP_GROUPS.filter((group) => !group.hidden).map((group) => (
             <div key={group.title} className="mb-16 last:mb-0">
@@ -352,7 +363,11 @@ export default function Home() {
                       <CardContent className="p-8 flex flex-col items-center h-full">
                         <h4 className="text-2xl font-serif text-secondary mb-2 uppercase">{tier.name}</h4>
                         <p className="text-3xl font-bold text-primary mb-1">${tier.price}</p>
-                        <p className="text-sm text-muted-foreground mb-4">per month + HST</p>
+                        <p className="text-sm text-muted-foreground mb-2">per month + HST</p>
+                        <p className="text-sm mb-4">
+                          <span className="line-through text-muted-foreground">${ANNUAL_FEE} annual fee</span>{" "}
+                          <span className="font-bold text-primary uppercase">Waived</span>
+                        </p>
                         <p className="text-muted-foreground mb-6 flex-1">{tier.description}</p>
                         {tier.fliipId ? (
                           <Button asChild className="uppercase font-bold tracking-wider" data-testid={`pricing-cta-${tier.id}`}>
