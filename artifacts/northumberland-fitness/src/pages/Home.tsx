@@ -36,11 +36,11 @@ const MEMBERSHIP_GROUPS = [
   {
     title: "Memberships",
     tiers: [
-      // Add each fliipId once the FLiiP payment link is ready; until then the button shows "Coming Soon".
-      { id: "under-30", name: "Under 30", price: "30.00", description: "Full access for members under 30", fliipId: "" },
-      { id: "adult", name: "Adult (30-64)", price: "60.00", description: "Full access for members aged 30 to 64", fliipId: "" },
-      { id: "senior", name: "Senior (65+)", price: "45.00", description: "Full access for members aged 65 and over", fliipId: "" },
-      { id: "group", name: "Group", price: "149.00", description: "Up to 5 people, billed to one person", fliipId: "" },
+      // Placeholder: all four plans share FLiiP ID 71591 until separate payment links are provided.
+      { id: "under-30", name: "Under 30", price: "30.00", description: "Full access for members under 30", fliipId: "71591" },
+      { id: "adult", name: "Adult (30-64)", price: "60.00", description: "Full access for members aged 30 to 64", fliipId: "71591" },
+      { id: "senior", name: "Senior (65+)", price: "45.00", description: "Full access for members aged 65 and over", fliipId: "71591" },
+      { id: "group", name: "Group", price: "149.00", description: "Up to 5 people, billed to one person", fliipId: "71591" },
     ],
   },
   {
