@@ -53,3 +53,7 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# GoDaddy Node.js Hosting creates its own root package-lock.json when it
+# installs; a committed one blocks its git pull.
+/package-lock.json
