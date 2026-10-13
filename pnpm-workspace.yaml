@@ -165,6 +165,7 @@ allowBuilds:
   msw: true
   unrs-resolver: true
 
-# GoDaddy Node.js Hosting deploys with npm (packageManager in package.json);
-# this lets pnpm keep working locally anyway.
+# packageManager in package.json pins pnpm 10 for GoDaddy Node.js Hosting,
+# whose live environment runs `pnpm start` and can't run pnpm 11+'s native
+# binary. These keep the locally installed pnpm in charge for development.
 pmOnFail: ignore
