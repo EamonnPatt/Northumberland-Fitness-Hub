@@ -24,7 +24,10 @@ promote other members to admin.
 
 | Variable | |
 | --- | --- |
-| `MONGODB_URI` | MongoDB connection string |
+| `DB_HOST` | MySQL host; `localhost` when the app runs on the same cPanel account as the database |
+| `DB_PORT` | optional; defaults to `3306` |
+| `DB_USER` / `DB_PASSWORD` | the MySQL user from cPanel → MySQL Databases (including cPanel's account prefix, e.g. `abc123_adminNF`) |
+| `DB_NAME` | the MySQL database name, also with the prefix |
 | `JWT_SECRET` | long random string (`node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`) |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | the manager's login for the admin panel |
 | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | mailbox the contact form sends through, e.g. the cPanel account `contact@northumberlandfitness.com` on `mail.northumberlandfitness.com`, port `465` |
@@ -33,6 +36,22 @@ promote other members to admin.
 | `CONTACT_TO` | optional; defaults to `contact@northumberlandfitness.com` |
 | `CLIENT_ORIGIN` | optional; extra origins (comma-separated) allowed to call the API cross-origin. Not needed for the site itself. |
 | `PORT` | optional; defaults to 4000 (most hosts set this for you) |
+
+The tables are created automatically on first startup.
+
+## Moving data over from MongoDB
+
+The site used MongoDB before MySQL. To copy the old accounts and site
+content into a new MySQL database, put the export file (`mongo-export.json`,
+git-ignored because it holds password hashes) in this folder, set the `DB_*`
+variables in `.env`, and run:
+
+```
+node scripts/import-mongo-export.mjs mongo-export.json
+```
+
+Accounts keep their IDs and passwords. It skips anything already in MySQL,
+so running it twice is safe.
 
 ## Building the frontend
 

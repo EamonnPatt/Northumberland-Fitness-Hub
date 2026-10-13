@@ -1,2 +1,5 @@
 node_modules
 .env
+
+# MongoDB export used once to import data into MySQL (contains password hashes).
+mongo-export.json

@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { User } from "../models/User.js";
+import { findUserByEmail, createUser, setUserRole } from "../models/User.js";
 
 // Guarantees ADMIN_EMAIL (if set) is an admin account. Creates it on first
 // run; on later runs only promotes the role if needed and never touches an
@@ -10,18 +10,17 @@ export async function ensureAdmin() {
   const password = process.env.ADMIN_PASSWORD;
   if (!email || !password) return;
 
-  const existing = await User.findOne({ email });
+  const existing = await findUserByEmail(email);
   if (existing) {
     if (existing.role !== "admin") {
-      existing.role = "admin";
-      await existing.save();
+      await setUserRole(existing._id, "admin");
       console.log(`Promoted existing account ${email} to admin.`);
     }
     return;
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
-  await User.create({
+  await createUser({
     firstName: "Admin",
     lastName: "Account",
     email,

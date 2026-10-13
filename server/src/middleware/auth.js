@@ -1,5 +1,5 @@
 import { verifyToken } from "../utils/jwt.js";
-import { User } from "../models/User.js";
+import { findUserById } from "../models/User.js";
 
 export async function requireAuth(req, res, next) {
   const header = req.headers.authorization || "";
@@ -9,7 +9,7 @@ export async function requireAuth(req, res, next) {
   }
   try {
     const payload = verifyToken(token);
-    const user = await User.findById(payload.sub);
+    const user = await findUserById(payload.sub);
     if (!user) {
       return res.status(401).json({ ok: false, message: "Not signed in." });
     }

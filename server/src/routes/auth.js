@@ -1,7 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import rateLimit from "express-rate-limit";
-import { User, SEX_OPTIONS, AGE_RANGE_OPTIONS, MEMBERSHIP_OPTIONS } from "../models/User.js";
+import { findUserByEmail, createUser, SEX_OPTIONS, AGE_RANGE_OPTIONS, MEMBERSHIP_OPTIONS } from "../models/User.js";
 import { signToken } from "../utils/jwt.js";
 import { requireAuth } from "../middleware/auth.js";
 
@@ -25,7 +25,7 @@ const loginLimiter = rateLimit({
   message: { ok: false, message: "Too many login attempts. Please try again in a few minutes." },
 });
 
-router.post("/register", registerLimiter, async (req, res) => {
+router.post("/register", registerLimiter, async (req, res, next) => {
   const { firstName, lastName, email, password, phone, membership, sex, ageRange } = req.body || {};
 
   if (!firstName || !lastName || !email || !password || !sex) {
@@ -45,22 +45,31 @@ router.post("/register", registerLimiter, async (req, res) => {
   }
 
   const normalizedEmail = String(email).toLowerCase().trim();
-  const existing = await User.findOne({ email: normalizedEmail });
+  const existing = await findUserByEmail(normalizedEmail);
   if (existing) {
     return res.status(409).json({ ok: false, message: "An account with that email already exists." });
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
-  const user = await User.create({
-    firstName,
-    lastName,
-    email: normalizedEmail,
-    passwordHash,
-    phone: phone || "",
-    membership: membership || "basic",
-    sex,
-    ageRange: ageRange || null,
-  });
+  let user;
+  try {
+    user = await createUser({
+      firstName,
+      lastName,
+      email: normalizedEmail,
+      passwordHash,
+      phone: phone || "",
+      membership: membership || "basic",
+      sex,
+      ageRange: ageRange || null,
+    });
+  } catch (err) {
+    // Two sign-ups with the same email at once: the unique index catches the second.
+    if (err.code === "ER_DUP_ENTRY") {
+      return res.status(409).json({ ok: false, message: "An account with that email already exists." });
+    }
+    return next(err);
+  }
 
   const token = signToken(user);
   res.status(201).json({ ok: true, token, user });
@@ -72,7 +81,7 @@ router.post("/login", loginLimiter, async (req, res) => {
     return res.status(422).json({ ok: false, message: "Email and password are required." });
   }
 
-  const user = await User.findOne({ email: String(email).toLowerCase().trim() });
+  const user = await findUserByEmail(String(email).toLowerCase().trim());
   if (!user) {
     return res.status(401).json({ ok: false, message: "Incorrect email or password." });
   }

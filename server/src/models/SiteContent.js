@@ -1,54 +1,48 @@
-import mongoose from "mongoose";
+import { pool } from "../db.js";
 
-const heroSlideSchema = new mongoose.Schema(
-  {
-    title: { type: String, required: true },
-    subtitle: { type: String, default: "" },
-    image: { type: String, required: true },
-  },
-  { _id: false },
-);
+const CONTENT_KEY = "site";
 
-const hoursRowSchema = new mongoose.Schema(
-  {
-    day: { type: String, required: true },
-    hours: { type: String, required: true },
-  },
-  { _id: false },
-);
+// Fields each section's items keep; required ones must be non-empty strings.
+const SECTIONS = {
+  hero: { title: true, subtitle: false, image: true },
+  hours: { day: true, hours: true },
+  classes: { name: true, day: true, time: true, instructor: false },
+  pricing: { id: true, name: true, price: true, description: false },
+};
 
-const classSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    day: { type: String, required: true },
-    time: { type: String, required: true },
-    instructor: { type: String, default: "" },
-  },
-  { _id: false },
-);
+export class ContentValidationError extends Error {
+  status = 422;
+}
 
-const pricingTierSchema = new mongoose.Schema(
-  {
-    id: { type: String, required: true },
-    name: { type: String, required: true },
-    price: { type: String, required: true },
-    description: { type: String, default: "" },
-  },
-  { _id: false },
-);
+// Keeps only the known string fields of each item, like the old Mongoose schemas.
+function cleanSection(name, items) {
+  if (!Array.isArray(items)) {
+    throw new ContentValidationError(`${name} must be a list.`);
+  }
+  return items.map((item, index) => {
+    const clean = {};
+    for (const [field, required] of Object.entries(SECTIONS[name])) {
+      const value = item?.[field];
+      if (required && (typeof value !== "string" || value === "")) {
+        throw new ContentValidationError(`${name} item ${index + 1} is missing ${field}.`);
+      }
+      clean[field] = value == null ? "" : String(value);
+    }
+    return clean;
+  });
+}
 
-const siteContentSchema = new mongoose.Schema(
-  {
-    key: { type: String, unique: true, default: "site" },
-    hero: { type: [heroSlideSchema], default: [] },
-    hours: { type: [hoursRowSchema], default: [] },
-    classes: { type: [classSchema], default: [] },
-    pricing: { type: [pricingTierSchema], default: [] },
-  },
-  { timestamps: true },
-);
-
-export const SiteContent = mongoose.model("SiteContent", siteContentSchema);
+function rowToContent(row) {
+  return {
+    key: row.content_key,
+    hero: JSON.parse(row.hero),
+    hours: JSON.parse(row.hours),
+    classes: JSON.parse(row.classes),
+    pricing: JSON.parse(row.pricing),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
 
 export const DEFAULT_CONTENT = {
   hero: [
@@ -90,9 +84,32 @@ export const DEFAULT_CONTENT = {
 };
 
 export async function getOrCreateSiteContent() {
-  let content = await SiteContent.findOne({ key: "site" });
-  if (!content) {
-    content = await SiteContent.create({ key: "site", ...DEFAULT_CONTENT });
+  const [rows] = await pool.query("SELECT * FROM site_content WHERE content_key = ?", [CONTENT_KEY]);
+  if (rows[0]) return rowToContent(rows[0]);
+  await saveSiteContent(DEFAULT_CONTENT, { onlyIfMissing: true });
+  return getOrCreateSiteContent();
+}
+
+// Replaces the given sections (hero, hours, classes, pricing); sections left
+// out keep their current value. `createdAt`/`updatedAt` are only passed when
+// importing existing content.
+export async function saveSiteContent(sections, { onlyIfMissing = false, createdAt, updatedAt } = {}) {
+  const now = new Date();
+  const values = {};
+  for (const name of Object.keys(SECTIONS)) {
+    if (sections[name] !== undefined) values[name] = JSON.stringify(cleanSection(name, sections[name]));
   }
-  return content;
+  if (onlyIfMissing) {
+    const row = {
+      content_key: CONTENT_KEY,
+      ...Object.fromEntries(Object.keys(SECTIONS).map((name) => [name, "[]"])),
+      ...values,
+      created_at: createdAt || now,
+      updated_at: updatedAt || now,
+    };
+    await pool.query("INSERT IGNORE INTO site_content SET ?", [row]);
+    return;
+  }
+  await getOrCreateSiteContent();
+  await pool.query("UPDATE site_content SET ? WHERE content_key = ?", [{ ...values, updated_at: updatedAt || now }, CONTENT_KEY]);
 }
