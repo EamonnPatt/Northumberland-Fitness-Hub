@@ -31,32 +31,47 @@ type ClassRow = { name: string; day: string; time: string; instructor: string };
 
 const FLIIP_BUY_URL = "https://northumberland.fliipapp.com/user/register/buy_membership/1";
 
-// Charged once a year on top of the monthly price, unless a tier sets
-// annualFeeWaived.
-const ANNUAL_FEE = "45";
+// Charged once a year per member on top of the monthly price.
+const ANNUAL_FEE = 45;
+
+type MembershipTier = {
+  id: string;
+  name: string;
+  price: string;
+  description: string;
+  fliipId: string;
+  // Billing period shown under the price (default "month").
+  period?: "day" | "week" | "month";
+  // Set for passes that carry no annual fee.
+  noAnnualFee?: boolean;
+};
+
+type MembershipGroup = {
+  title: string;
+  description?: string;
+  hidden?: boolean;
+  tiers: MembershipTier[];
+};
 
 // Prices are before 13% HST; FLiiP adds tax at checkout.
-const MEMBERSHIP_GROUPS = [
+// Add each fliipId once the FLiiP payment link is ready; until then the button shows "Coming Soon".
+const MEMBERSHIP_GROUPS: MembershipGroup[] = [
   {
-    title: "Memberships",
+    title: "Regular Memberships",
+    description: "Monthly, auto-renewing.",
     tiers: [
-      // Add each fliipId once the FLiiP payment link is ready; until then the button shows "Coming Soon".
-      { id: "regular", name: "Regular", price: "60.00", description: "Full access for one member", fliipId: "" },
+      { id: "regular", name: "Individual", price: "60.00", description: "Full access for one member", fliipId: "" },
       { id: "group", name: "Group", price: "225.00", description: "Up to 5 people, billed to one person", fliipId: "" },
+      { id: "sweat-hearts", name: "Couples", price: "110.00", description: "Full access for two — gym and classes", fliipId: "71508" },
     ],
   },
   {
-    title: "Couples Memberships",
-    description: `Couples memberships come with the $${ANNUAL_FEE} annual fee waived.`,
+    title: "Provisional Memberships",
+    description: "Short-term passes with no annual fee.",
     tiers: [
-      {
-        id: "sweat-hearts",
-        name: "Sweat Hearts",
-        price: "120.00",
-        description: "Full access for two — gym and classes",
-        fliipId: "71508",
-        annualFeeWaived: true,
-      },
+      { id: "daily-pass", name: "Daily Pass", price: "15.00", description: "Full access for one day", fliipId: "", period: "day", noAnnualFee: true },
+      { id: "weekly-pass", name: "Weekly Pass", price: "50.00", description: "Full access for one week", fliipId: "", period: "week", noAnnualFee: true },
+      { id: "monthly-pass", name: "Monthly Pass", price: "90.00", description: "Full access for one month", fliipId: "", period: "month", noAnnualFee: true },
     ],
   },
   {
@@ -66,8 +81,8 @@ const MEMBERSHIP_GROUPS = [
     description:
       "For firefighters, police officers, nurses and other front-line heroes. Requires approval on site — and the $45 annual fee is waived.",
     tiers: [
-      { id: "heroes-premium", name: "Hometown Heroes Premium", price: "45.00", description: "Gym access (no classes)", fliipId: "71031", annualFeeWaived: true },
-      { id: "heroes-elite", name: "Hometown Heroes Elite", price: "59.95", description: "Full access — gym and classes", fliipId: "71033", annualFeeWaived: true },
+      { id: "heroes-premium", name: "Hometown Heroes Premium", price: "45.00", description: "Gym access (no classes)", fliipId: "71031", noAnnualFee: true },
+      { id: "heroes-elite", name: "Hometown Heroes Elite", price: "59.95", description: "Full access — gym and classes", fliipId: "71033", noAnnualFee: true },
     ],
   },
 ];
@@ -341,7 +356,7 @@ export default function Home() {
               <Tag className="w-8 h-8 text-primary" /> Membership Plans
             </h2>
             <div className="w-24 h-2 bg-primary mx-auto mb-6"></div>
-            <p className="text-muted-foreground">Monthly, auto-renewing. Prices shown before 13% HST.</p>
+            <p className="text-muted-foreground">Prices shown before 13% HST.</p>
           </div>
           {MEMBERSHIP_GROUPS.filter((group) => !group.hidden).map((group) => (
             <div key={group.title} className="mb-16 last:mb-0">
@@ -350,7 +365,13 @@ export default function Home() {
                 <p className="text-muted-foreground text-center max-w-2xl mx-auto -mt-4 mb-8">{group.description}</p>
               )}
               <motion.div
-                className={`grid gap-8 mx-auto ${group.tiers.length === 1 ? "max-w-sm" : "sm:grid-cols-2 max-w-3xl"}`}
+                className={`grid gap-8 mx-auto ${
+                  group.tiers.length === 1
+                    ? "max-w-sm"
+                    : group.tiers.length === 2
+                      ? "sm:grid-cols-2 max-w-3xl"
+                      : "sm:grid-cols-2 lg:grid-cols-3 max-w-5xl"
+                }`}
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, margin: "-100px" }}
@@ -362,11 +383,10 @@ export default function Home() {
                       <CardContent className="p-8 flex flex-col items-center h-full">
                         <h4 className="text-2xl font-serif text-secondary mb-2 uppercase">{tier.name}</h4>
                         <p className="text-3xl font-bold text-primary mb-1">${tier.price}</p>
-                        <p className="text-sm text-muted-foreground mb-2">per month + HST</p>
-                        {"annualFeeWaived" in tier && tier.annualFeeWaived ? (
-                          <p className="text-sm mb-4" data-testid={`annual-fee-${tier.id}`}>
-                            <span className="line-through text-muted-foreground">${ANNUAL_FEE} annual fee</span>{" "}
-                            <span className="font-bold text-primary uppercase">Waived</span>
+                        <p className="text-sm text-muted-foreground mb-2">per {tier.period ?? "month"} + HST</p>
+                        {tier.noAnnualFee ? (
+                          <p className="text-sm font-bold text-primary uppercase mb-4" data-testid={`annual-fee-${tier.id}`}>
+                            No annual fee
                           </p>
                         ) : (
                           <p className="text-sm text-muted-foreground mb-4" data-testid={`annual-fee-${tier.id}`}>

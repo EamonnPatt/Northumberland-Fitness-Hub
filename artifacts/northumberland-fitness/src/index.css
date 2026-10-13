@@ -158,3 +158,44 @@
     @apply font-serif uppercase tracking-tight;
   }
 }
+
+@layer components {
+  .grand-opening-banner {
+    @apply relative overflow-hidden text-center py-2 px-4 text-sm md:text-base font-bold uppercase tracking-widest;
+    color: #3b2a00;
+    background: linear-gradient(90deg, #b8860b, #f5d76e 25%, #fff3b0 50%, #f5d76e 75%, #b8860b);
+    background-size: 200% 100%;
+    animation: grand-opening-gradient 6s linear infinite;
+    text-shadow: 0 1px 0 rgb(255 255 255 / 0.5);
+  }
+
+  /* Light sweep that glints across the banner. */
+  .grand-opening-banner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    background: linear-gradient(110deg, transparent, rgb(255 255 255 / 0.85), transparent);
+    transform: translateX(-150%) skewX(-20deg);
+    animation: grand-opening-shine 3s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .grand-opening-banner,
+    .grand-opening-banner::after {
+      animation: none;
+    }
+    .grand-opening-banner::after {
+      display: none;
+    }
+  }
+}
+
+@keyframes grand-opening-gradient {
+  to { background-position: 200% 0; }
+}
+
+@keyframes grand-opening-shine {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  60%, 100% { transform: translateX(350%) skewX(-20deg); }
+}

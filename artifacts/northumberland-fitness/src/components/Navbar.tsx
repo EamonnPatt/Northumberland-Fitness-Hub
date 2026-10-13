@@ -77,10 +77,13 @@ export default function Navbar() {
     <nav
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-white py-2 shadow-lg" : "bg-white/95 py-2 backdrop-blur-sm"
+        isScrolled ? "bg-white shadow-lg" : "bg-white/95 backdrop-blur-sm"
       )}
     >
-      <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
+      <div className="grand-opening-banner" data-testid="grand-opening-banner">
+        <span className="relative z-10">★ Grand Opening — October 26 ★</span>
+      </div>
+      <div className="container mx-auto px-4 md:px-6 py-2 flex items-center justify-between">
         <div
           className="cursor-pointer shrink-0"
           onClick={() => handleNavClick("home")}
