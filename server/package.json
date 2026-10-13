@@ -8,6 +8,7 @@
     "node": ">=20"
   },
   "scripts": {
+    "build": "echo build",
     "start": "node src/index.js",
     "dev": "node --watch src/index.js",
     "build:frontend": "node scripts/build-frontend.mjs"
