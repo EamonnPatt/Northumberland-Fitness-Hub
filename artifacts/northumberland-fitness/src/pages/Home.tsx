@@ -62,7 +62,7 @@ const MEMBERSHIP_GROUPS: MembershipGroup[] = [
     tiers: [
       { id: "regular", name: "Individual", price: "60.00", description: "Full access for one member", fliipId: "" },
       { id: "group", name: "Group", price: "225.00", description: "Up to 5 people, billed to one person", fliipId: "" },
-      { id: "sweat-hearts", name: "Couples", price: "110.00", description: "Full access for two — gym and classes", fliipId: "71508" },
+      { id: "sweat-hearts", name: "Couples", price: "110.00", description: "Full access for two — gym and classes", fliipId: "" },
     ],
   },
   {
