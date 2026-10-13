@@ -164,3 +164,7 @@ allowBuilds:
   esbuild: true
   msw: true
   unrs-resolver: true
+
+# GoDaddy Node.js Hosting deploys with npm (packageManager in package.json);
+# this lets pnpm keep working locally anyway.
+pmOnFail: ignore
