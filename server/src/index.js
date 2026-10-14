@@ -23,10 +23,18 @@ const sites = {
   admin: path.join(siteDir, "admin"),
 };
 
-// admin.northumberlandfitness.com (or admin.localhost while developing) gets
-// the admin bundle; every other hostname gets the public site.
+// The admin bundle is built for the /admin path, so it is served from the main
+// site at northumberlandfitness.com/admin. An admin.* hostname (for example
+// admin.northumberlandfitness.com, if it is pointed at this app) is sent there.
+const ADMIN_PATH = "/admin";
+function isAdminHost(req) {
+  return req.hostname.startsWith("admin.");
+}
+function isAdminPath(req) {
+  return req.path === ADMIN_PATH || req.path.startsWith(`${ADMIN_PATH}/`);
+}
 function siteFor(req) {
-  return req.hostname.startsWith("admin.") ? "admin" : "public";
+  return isAdminPath(req) ? "admin" : "public";
 }
 
 const app = express();
@@ -78,9 +86,26 @@ const staticHandlers = {
 };
 
 app.use((req, res, next) => {
+  if (isAdminHost(req) && !isAdminPath(req) && !req.path.startsWith("/api")) {
+    return res.redirect(`${ADMIN_PATH}/`);
+  }
+  if (req.path === ADMIN_PATH) return res.redirect(`${ADMIN_PATH}/`);
+  next();
+});
+
+app.use((req, res, next) => {
   // Leftover cPanel files from the old static deploy — never serve these.
   if (/\.(php|htaccess)$/i.test(req.path)) return next();
-  staticHandlers[siteFor(req)](req, res, next);
+  if (isAdminPath(req)) {
+    // Files live at the root of the admin folder, so drop the /admin prefix.
+    const original = req.url;
+    req.url = req.url.slice(ADMIN_PATH.length) || "/";
+    return staticHandlers.admin(req, res, (err) => {
+      req.url = original;
+      next(err);
+    });
+  }
+  staticHandlers.public(req, res, next);
 });
 
 // Single-page app fallback: any other page route loads index.html and the

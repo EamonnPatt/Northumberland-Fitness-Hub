@@ -9,18 +9,21 @@ import { fileURLToPath } from "node:url";
 const serverRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repoRoot = path.resolve(serverRoot, "..");
 
+// The admin site is served by the main site under /admin, so it is built for that base path.
 const builds = [
   {
     name: "public",
+    base: "/",
     env: { VITE_APP_TITLE: "Northumberland Fitness", VITE_ROBOTS: "index, follow", VITE_ADMIN_SITE: "false" },
   },
   {
     name: "admin",
+    base: "/admin/",
     env: { VITE_APP_TITLE: "Northumberland Fitness — Admin", VITE_ROBOTS: "noindex, nofollow", VITE_ADMIN_SITE: "true" },
   },
 ];
 
-for (const { name, env } of builds) {
+for (const { name, base, env } of builds) {
   console.log(`\n> Building ${name} site...`);
   const outDir = path.join(serverRoot, "site", name);
   const result = spawnSync(
@@ -32,7 +35,7 @@ for (const { name, env } of builds) {
       shell: true,
       // VITE_API_URL is blank so the site calls the API on its own origin. This
       // overrides the frontend's .env, which still points the cPanel build at Render.
-      env: { ...process.env, NODE_ENV: "production", PORT: "3000", BASE_PATH: "/", VITE_API_URL: "", ...env },
+      env: { ...process.env, NODE_ENV: "production", PORT: "3000", BASE_PATH: base, VITE_API_URL: "", ...env },
     },
   );
   if (result.status !== 0) process.exit(result.status ?? 1);
