@@ -7,7 +7,7 @@ const SECTIONS = {
   hero: { title: true, subtitle: false, image: true },
   hours: { day: true, hours: true },
   classes: { name: true, day: true, time: true, instructor: false },
-  pricing: { id: true, name: true, price: true, description: false },
+  pricing: { id: true, name: true, price: true, description: false, link: false },
 };
 
 export class ContentValidationError extends Error {
@@ -26,7 +26,10 @@ function cleanSection(name, items) {
       if (required && (typeof value !== "string" || value === "")) {
         throw new ContentValidationError(`${name} item ${index + 1} is missing ${field}.`);
       }
-      clean[field] = value == null ? "" : String(value);
+      clean[field] = value == null ? "" : String(value).trim();
+    }
+    if (name === "pricing" && clean.link && !/^https?:\/\//i.test(clean.link)) {
+      throw new ContentValidationError(`${clean.name || `pricing item ${index + 1}`}: the link must start with http:// or https://.`);
     }
     return clean;
   });
@@ -38,7 +41,7 @@ function rowToContent(row) {
     hero: JSON.parse(row.hero),
     hours: JSON.parse(row.hours),
     classes: JSON.parse(row.classes),
-    pricing: JSON.parse(row.pricing),
+    pricing: withDefaultTiers(JSON.parse(row.pricing)),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -77,11 +80,22 @@ export const DEFAULT_CONTENT = {
     { name: "Mobility & Core", day: "Friday", time: "5:30 PM", instructor: "TBD" },
   ],
   pricing: [
-    { id: "basic", name: "Basic", price: "$29/mo", description: "Access to gym floor" },
-    { id: "premium", name: "Premium", price: "$49/mo", description: "Gym floor & classes" },
-    { id: "elite", name: "Elite", price: "$79/mo", description: "All access + personal training" },
+    { id: "regular", name: "Individual", price: "60.00", description: "Full access for one member", link: "" },
+    { id: "group", name: "Group", price: "225.00", description: "Up to 5 people, billed to one person", link: "" },
+    { id: "sweat-hearts", name: "Couples", price: "110.00", description: "Full access for two — gym and classes", link: "" },
+    { id: "daily-pass", name: "Daily Pass", price: "15.00", description: "Full access for one day", link: "" },
+    { id: "weekly-pass", name: "Weekly Pass", price: "40.00", description: "Full access for one week", link: "" },
+    { id: "monthly-pass", name: "Monthly Pass", price: "80.00", description: "Full access for one month", link: "" },
   ],
 };
+
+// The membership plans are fixed (the site lays them out in code); only their
+// name, price, description and link are editable. Always returns exactly the
+// default plans, so content saved before this change (basic/premium/elite)
+// is replaced by them instead of showing plans the site doesn't have.
+function withDefaultTiers(stored) {
+  return DEFAULT_CONTENT.pricing.map((tier) => ({ ...tier, ...stored.find((item) => item.id === tier.id) }));
+}
 
 export async function getOrCreateSiteContent() {
   const [rows] = await pool.query("SELECT * FROM site_content WHERE content_key = ?", [CONTENT_KEY]);

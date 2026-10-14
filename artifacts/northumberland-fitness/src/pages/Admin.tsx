@@ -22,7 +22,7 @@ import { Plus, Trash2 } from "lucide-react";
 type HeroSlide = { title: string; subtitle: string; image: string };
 type HoursRow = { day: string; hours: string };
 type ClassRow = { name: string; day: string; time: string; instructor: string };
-type PricingTier = { id: string; name: string; price: string; description: string };
+type PricingTier = { id: string; name: string; price: string; description: string; link: string };
 
 type SiteContent = {
   hero: HeroSlide[];
@@ -301,6 +301,13 @@ function ClassesEditor({
   );
 }
 
+// The plans themselves are fixed (the public site lays them out in code), so
+// they can be edited here but not added or removed.
+const PRICING_GROUPS = [
+  { title: "Regular Memberships", ids: ["regular", "group", "sweat-hearts"] },
+  { title: "Provisional Memberships", ids: ["daily-pass", "weekly-pass", "monthly-pass"] },
+];
+
 function PricingEditor({
   tiers,
   saving,
@@ -312,35 +319,60 @@ function PricingEditor({
 }) {
   const [draft, setDraft] = useState(tiers);
 
-  function update(idx: number, patch: Partial<PricingTier>) {
-    setDraft((d) => d.map((r, i) => (i === idx ? { ...r, ...patch } : r)));
+  function update(id: string, patch: Partial<PricingTier>) {
+    setDraft((d) => d.map((t) => (t.id === id ? { ...t, ...patch } : t)));
   }
 
   return (
-    <Card className="border-none shadow-lg">
-      <CardContent className="p-6 space-y-3">
-        {draft.map((tier, idx) => (
-          <div key={idx} className="grid sm:grid-cols-4 gap-3 items-center">
-            <Input placeholder="Plan name" value={tier.name} onChange={(e) => update(idx, { name: e.target.value })} />
-            <Input placeholder="Price" value={tier.price} onChange={(e) => update(idx, { price: e.target.value })} />
-            <Input
-              placeholder="Description"
-              value={tier.description}
-              onChange={(e) => update(idx, { description: e.target.value })}
-            />
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setDraft((d) => d.filter((_, i) => i !== idx))}
-              data-testid={`remove-pricing-${idx}`}
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
-          </div>
-        ))}
-        <SaveBar saving={saving} onSave={() => onSave(draft)} />
-      </CardContent>
-    </Card>
+    <div className="space-y-6">
+      <p className="text-sm text-muted-foreground">
+        Prices are in dollars before 13% HST. Paste the checkout link the Buy Membership button should open; leave it
+        blank to show &ldquo;Coming Soon&rdquo;.
+      </p>
+      {PRICING_GROUPS.map((group) => (
+        <div key={group.title} className="space-y-4">
+          <h2 className="text-xl font-serif text-secondary uppercase">{group.title}</h2>
+          {group.ids.map((id) => {
+            const tier = draft.find((t) => t.id === id);
+            if (!tier) return null;
+            return (
+              <Card key={id} className="border-none shadow-lg">
+                <CardContent className="p-6 space-y-3">
+                  <div className="grid sm:grid-cols-[1fr_8rem] gap-3">
+                    <Input
+                      placeholder="Plan name"
+                      value={tier.name}
+                      onChange={(e) => update(id, { name: e.target.value })}
+                      data-testid={`pricing-name-${id}`}
+                    />
+                    <Input
+                      placeholder="Price"
+                      inputMode="decimal"
+                      value={tier.price}
+                      onChange={(e) => update(id, { price: e.target.value })}
+                      data-testid={`pricing-price-${id}`}
+                    />
+                  </div>
+                  <Input
+                    placeholder="Description"
+                    value={tier.description}
+                    onChange={(e) => update(id, { description: e.target.value })}
+                  />
+                  <Input
+                    type="url"
+                    placeholder="Buy Membership link (https://…)"
+                    value={tier.link}
+                    onChange={(e) => update(id, { link: e.target.value })}
+                    data-testid={`pricing-link-${id}`}
+                  />
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      ))}
+      <SaveBar saving={saving} onSave={() => onSave(draft)} />
+    </div>
   );
 }
 

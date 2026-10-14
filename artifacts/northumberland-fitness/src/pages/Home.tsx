@@ -39,7 +39,10 @@ type MembershipTier = {
   name: string;
   price: string;
   description: string;
-  fliipId: string;
+  // Checkout link the button opens; the admin panel edits it. Empty shows "Coming Soon".
+  link?: string;
+  // Fixed FLiiP plan id, for tiers whose link isn't editable.
+  fliipId?: string;
   // Billing period shown under the price (default "month").
   period?: "day" | "week" | "month";
   // Set for passes that carry no annual fee.
@@ -54,24 +57,25 @@ type MembershipGroup = {
 };
 
 // Prices are before 13% HST; FLiiP adds tax at checkout.
-// Add each fliipId once the FLiiP payment link is ready; until then the button shows "Coming Soon".
+// Name, price, description and link of the visible plans come from the admin panel (see pricing in
+// /api/content); the values here are the fallback if the API is unreachable.
 const MEMBERSHIP_GROUPS: MembershipGroup[] = [
   {
     title: "Regular Memberships",
-    description: "Monthly, auto-renewing.",
+    description: "Monthly, auto-renewing, with a 1-year commitment.",
     tiers: [
-      { id: "regular", name: "Individual", price: "60.00", description: "Full access for one member", fliipId: "" },
-      { id: "group", name: "Group", price: "225.00", description: "Up to 5 people, billed to one person", fliipId: "" },
-      { id: "sweat-hearts", name: "Couples", price: "110.00", description: "Full access for two — gym and classes", fliipId: "" },
+      { id: "regular", name: "Individual", price: "60.00", description: "Full access for one member" },
+      { id: "group", name: "Group", price: "225.00", description: "Up to 5 people, billed to one person" },
+      { id: "sweat-hearts", name: "Couples", price: "110.00", description: "Full access for two — gym and classes" },
     ],
   },
   {
     title: "Provisional Memberships",
     description: "Short-term passes with no annual fee.",
     tiers: [
-      { id: "daily-pass", name: "Daily Pass", price: "15.00", description: "Full access for one day", fliipId: "", period: "day", noAnnualFee: true },
-      { id: "weekly-pass", name: "Weekly Pass", price: "50.00", description: "Full access for one week", fliipId: "", period: "week", noAnnualFee: true },
-      { id: "monthly-pass", name: "Monthly Pass", price: "90.00", description: "Full access for one month", fliipId: "", period: "month", noAnnualFee: true },
+      { id: "daily-pass", name: "Daily Pass", price: "15.00", description: "Full access for one day", period: "day", noAnnualFee: true },
+      { id: "weekly-pass", name: "Weekly Pass", price: "40.00", description: "Full access for one week", period: "week", noAnnualFee: true },
+      { id: "monthly-pass", name: "Monthly Pass", price: "80.00", description: "Full access for one month", period: "month", noAnnualFee: true },
     ],
   },
   {
@@ -87,6 +91,20 @@ const MEMBERSHIP_GROUPS: MembershipGroup[] = [
   },
 ];
 
+type PricingOverride = { id: string; name: string; price: string; description: string; link?: string };
+
+function applyPricing(tier: MembershipTier, overrides: PricingOverride[]): MembershipTier {
+  const edited = overrides.find((item) => item.id === tier.id);
+  if (!edited) return tier;
+  return {
+    ...tier,
+    name: edited.name || tier.name,
+    price: edited.price ? edited.price.replace(/^\$/, "") : tier.price,
+    description: edited.description,
+    link: edited.link,
+  };
+}
+
 export default function Home() {
   const { toast } = useToast();
   const [, navigate] = useLocation();
@@ -94,6 +112,7 @@ export default function Home() {
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [hours, setHours] = useState(DEFAULT_HOURS);
   const [classes, setClasses] = useState<ClassRow[]>([]);
+  const [pricing, setPricing] = useState<PricingOverride[]>([]);
 
   useEffect(() => {
     apiFetch("/api/content")
@@ -102,6 +121,7 @@ export default function Home() {
           setHours(data.content.hours);
         }
         if (Array.isArray(data.content?.classes)) setClasses(data.content.classes);
+        if (Array.isArray(data.content?.pricing)) setPricing(data.content.pricing);
       })
       .catch(() => {
         // Admin API unreachable — the page still works with default content.
@@ -377,7 +397,10 @@ export default function Home() {
                 viewport={{ once: true, margin: "-100px" }}
                 variants={staggerContainer}
               >
-                {group.tiers.map((tier) => (
+                {group.tiers.map((baseTier) => {
+                  const tier = applyPricing(baseTier, pricing);
+                  const href = tier.link || (tier.fliipId ? `${FLIIP_BUY_URL}/${tier.fliipId}` : "");
+                  return (
                   <motion.div key={tier.id} variants={itemVariant}>
                     <Card className="h-full bg-white border-none shadow-lg text-center">
                       <CardContent className="p-8 flex flex-col items-center h-full">
@@ -394,9 +417,9 @@ export default function Home() {
                           </p>
                         )}
                         <p className="text-muted-foreground mb-6 flex-1">{tier.description}</p>
-                        {tier.fliipId ? (
+                        {href ? (
                           <Button asChild className="uppercase font-bold tracking-wider" data-testid={`pricing-cta-${tier.id}`}>
-                            <a href={`${FLIIP_BUY_URL}/${tier.fliipId}`} target="_blank" rel="noopener noreferrer">
+                            <a href={href} target="_blank" rel="noopener noreferrer">
                               Buy Membership
                             </a>
                           </Button>
@@ -408,7 +431,8 @@ export default function Home() {
                       </CardContent>
                     </Card>
                   </motion.div>
-                ))}
+                  );
+                })}
               </motion.div>
             </div>
           ))}
