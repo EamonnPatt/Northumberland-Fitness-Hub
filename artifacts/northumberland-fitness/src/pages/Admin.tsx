@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AdminHeader from "@/components/AdminHeader";
+import ProvisionalMemberships from "@/components/ProvisionalMemberships";
 import { apiFetch } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -119,14 +120,19 @@ export default function Admin() {
       <div className="py-12 container mx-auto px-4 md:px-6">
         <h1 className="text-4xl font-serif text-secondary mb-8">Admin Panel</h1>
 
-        <Tabs defaultValue="hours">
+        <Tabs defaultValue="provisional">
           <TabsList className="mb-6 flex-wrap h-auto">
+            <TabsTrigger value="provisional">Provisional Memberships</TabsTrigger>
             <TabsTrigger value="hours">Club Hours</TabsTrigger>
             <TabsTrigger value="hero">Homepage Text</TabsTrigger>
             <TabsTrigger value="classes">Class Timetable</TabsTrigger>
             <TabsTrigger value="pricing">Pricing</TabsTrigger>
             <TabsTrigger value="members">Members</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="provisional">
+            <ProvisionalMemberships pricing={content.pricing} />
+          </TabsContent>
 
           <TabsContent value="hours">
             <HoursEditor rows={content.hours} saving={saving} onSave={(hours) => saveContent({ ...content, hours })} />

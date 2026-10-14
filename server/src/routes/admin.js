@@ -1,10 +1,12 @@
 import { Router } from "express";
 import { listUsers, findUserById, setUserRole, ROLE_OPTIONS } from "../models/User.js";
 import { requireAuth, requireAdmin } from "../middleware/auth.js";
+import provisionalRoutes from "./provisional.js";
 
 const router = Router();
 
 router.use(requireAuth, requireAdmin);
+router.use("/provisional", provisionalRoutes);
 
 router.get("/users", async (_req, res) => {
   const users = await listUsers();

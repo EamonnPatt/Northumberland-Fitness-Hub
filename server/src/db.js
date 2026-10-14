@@ -30,6 +30,26 @@ const SCHEMA = [
     created_at DATETIME(3) NOT NULL,
     updated_at DATETIME(3) NOT NULL
   ) DEFAULT CHARSET=utf8mb4`,
+  // Daily/weekly/monthly passes sold in person on the Square terminal. Dates
+  // are stored as YYYY-MM-DD text (gym-local days, no timezone to get wrong).
+  `CREATE TABLE IF NOT EXISTS provisional_memberships (
+    id CHAR(24) NOT NULL PRIMARY KEY,
+    member_key CHAR(4) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    phone VARCHAR(50) NOT NULL DEFAULT '',
+    email VARCHAR(255) NOT NULL DEFAULT '',
+    plan VARCHAR(20) NOT NULL,
+    price VARCHAR(20) NOT NULL DEFAULT '',
+    start_date CHAR(10) NOT NULL,
+    end_date CHAR(10) NOT NULL,
+    notes TEXT NOT NULL,
+    created_by VARCHAR(255) NOT NULL DEFAULT '',
+    created_at DATETIME(3) NOT NULL,
+    KEY provisional_key (member_key),
+    KEY provisional_end_date (end_date),
+    KEY provisional_created_at (created_at)
+  ) DEFAULT CHARSET=utf8mb4`,
 ];
 
 export async function connectDb() {
