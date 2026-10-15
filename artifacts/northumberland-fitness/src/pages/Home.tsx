@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiFetch } from "@/lib/api";
-import { Dumbbell, Activity, Users, HeartPulse, Clock, MapPin, Phone, Mail, ArrowRight, CalendarDays, Tag } from "lucide-react";
+import { Dumbbell, Activity, Users, HeartPulse, Clock, MapPin, Phone, Mail, ArrowRight, CalendarDays, Tag, ShieldCheck } from "lucide-react";
 
 const CONTACT_ENDPOINT = `${import.meta.env.BASE_URL}contact.php`;
 
@@ -377,6 +377,16 @@ export default function Home() {
             </h2>
             <div className="w-24 h-2 bg-primary mx-auto mb-6"></div>
             <p className="text-muted-foreground">Prices shown before 13% HST.</p>
+            <div
+              className="max-w-2xl mx-auto mt-8 flex items-center gap-4 border-l-8 border-primary bg-white p-5 text-left shadow-md"
+              data-testid="emergency-worker-discount"
+            >
+              <ShieldCheck className="w-8 h-8 shrink-0 text-primary" />
+              <p className="text-secondary">
+                <span className="font-bold uppercase">Emergency service workers</span> are eligible for a discounted
+                membership. Show proof at the front desk.
+              </p>
+            </div>
           </div>
           {MEMBERSHIP_GROUPS.filter((group) => !group.hidden).map((group) => (
             <div key={group.title} className="mb-16 last:mb-0">
