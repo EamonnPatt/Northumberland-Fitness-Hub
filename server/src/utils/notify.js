@@ -1,35 +1,9 @@
+import { renderPassEmail } from "./passEmail.js";
+
 // Emails customers their pass details through Resend's web API. GoDaddy's Node
 // hosting only allows outbound web traffic (no SMTP), so this is plain HTTPS.
 // Needs RESEND_API_KEY and MAIL_FROM (an address on a domain verified in Resend,
 // e.g. "Northumberland Fitness <passes@northumberlandfitness.com>").
-
-const PLAN_LABELS = { daily: "Daily Pass", weekly: "Weekly Pass", monthly: "Monthly Pass" };
-
-function formatDate(value) {
-  return new Date(`${value}T00:00:00Z`).toLocaleDateString("en-CA", {
-    timeZone: "UTC",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-function buildMessage(m) {
-  const plan = PLAN_LABELS[m.plan] || "pass";
-  const dates = m.startDate === m.endDate ? formatDate(m.startDate) : `${formatDate(m.startDate)} to ${formatDate(m.endDate)}`;
-  const text = [
-    `Hi ${m.firstName},`,
-    "",
-    `Thanks for choosing Northumberland Fitness! Your ${plan} is valid ${dates}.`,
-    "",
-    `Your 4-digit sign-in code is: ${m.key}`,
-    "",
-    "Give this code to the front desk each time you visit.",
-    "",
-    "Northumberland Fitness",
-  ].join("\n");
-  return { subject: `Your Northumberland Fitness sign-in code: ${m.key}`, text };
-}
 
 // Resolves to { status, message }: "sent", "failed", or "skipped" when there is
 // nothing to send to or sending isn't configured. Never throws, so a mail
@@ -43,12 +17,12 @@ export async function sendPassConfirmation(membership) {
     console.error("Provisional pass saved but RESEND_API_KEY / MAIL_FROM are not configured.");
     return { status: "skipped", message: "Email sending isn't set up yet, so no confirmation was sent." };
   }
-  const { subject, text } = buildMessage(membership);
+  const { subject, text, html } = renderPassEmail(membership);
   try {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from: MAIL_FROM, to: [membership.email], subject, text }),
+      body: JSON.stringify({ from: MAIL_FROM, to: [membership.email], subject, text, html }),
       signal: AbortSignal.timeout(10000),
     });
     if (!res.ok) {
