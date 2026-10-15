@@ -32,7 +32,8 @@ promote other members to admin.
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | the manager's login for the admin panel |
 | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | mailbox the contact form sends through, e.g. the cPanel account `contact@northumberlandfitness.com` on `mail.northumberlandfitness.com`, port `465` |
 | `SMTP_SECURE` | optional; defaults to `true` on port 465, `false` otherwise |
-| `MAIL_FROM` | optional; defaults to `SMTP_USER` |
+| `MAIL_FROM` | the sender address; defaults to `SMTP_USER` for the contact form. For provisional-pass confirmations it must be an address on a domain verified in Resend, e.g. `Northumberland Fitness <passes@northumberlandfitness.com>` |
+| `RESEND_API_KEY` | API key from resend.com, used to email provisional-membership customers their 4-digit sign-in code (sent over HTTPS, since GoDaddy Node hosting blocks SMTP). Without it passes still save, but no confirmation is sent |
 | `CONTACT_TO` | optional; defaults to `contact@northumberlandfitness.com` |
 | `CLIENT_ORIGIN` | optional; extra origins (comma-separated) allowed to call the API cross-origin. Not needed for the site itself. |
 | `PORT` | optional; defaults to 4000 (most hosts set this for you) |

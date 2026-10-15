@@ -45,6 +45,7 @@ const SCHEMA = [
     end_date CHAR(10) NOT NULL,
     notes TEXT NOT NULL,
     employee VARCHAR(100) NOT NULL DEFAULT '',
+    confirmation VARCHAR(20) NOT NULL DEFAULT '',
     created_by VARCHAR(255) NOT NULL DEFAULT '',
     created_at DATETIME(3) NOT NULL,
     KEY provisional_key (member_key),
@@ -57,6 +58,7 @@ const SCHEMA = [
 // after a table was first created are added here.
 const ADDED_COLUMNS = [
   { table: "provisional_memberships", column: "employee", definition: "VARCHAR(100) NOT NULL DEFAULT '' AFTER notes" },
+  { table: "provisional_memberships", column: "confirmation", definition: "VARCHAR(20) NOT NULL DEFAULT '' AFTER employee" },
 ];
 
 async function addMissingColumns() {

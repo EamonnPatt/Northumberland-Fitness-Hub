@@ -53,6 +53,8 @@ function rowToMembership(row, today) {
     endDate: row.end_date,
     notes: row.notes,
     employee: row.employee,
+    // "sent", "failed" or "skipped" (blank for passes entered before confirmations existed).
+    confirmation: row.confirmation || "",
     createdBy: row.created_by,
     createdAt: row.created_at,
     status: statusFor(row, today),
@@ -84,6 +86,11 @@ export async function createProvisionalMembership(input, createdBy) {
   const today = todayString();
   const startDate = input.startDate ? trimmed(input.startDate) : today;
   if (!isDateString(startDate)) throw new ProvisionalValidationError("Start date must be a valid date.");
+  const phone = trimmed(input.phone);
+  const email = trimmed(input.email).toLowerCase();
+  if (!phone && !email) throw new ProvisionalValidationError("Enter a phone number or an email address.");
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new ProvisionalValidationError("Enter a valid email address.");
+  if (phone && phone.replace(/\D/g, "").length < 7) throw new ProvisionalValidationError("Enter a valid phone number.");
   const price = trimmed(input.price).replace(/^\$/, "");
   if (price && !/^\d{1,4}(\.\d{1,2})?$/.test(price)) throw new ProvisionalValidationError("Price must be a dollar amount like 40.00.");
 
@@ -92,8 +99,8 @@ export async function createProvisionalMembership(input, createdBy) {
     member_key: await generateKey(today),
     first_name: firstName,
     last_name: lastName,
-    phone: trimmed(input.phone),
-    email: trimmed(input.email).toLowerCase(),
+    phone,
+    email,
     plan: input.plan,
     price,
     start_date: startDate,
@@ -132,6 +139,15 @@ export async function listProvisionalMemberships({ query = "", status = "" } = {
   const sql = `SELECT * FROM provisional_memberships${where.length ? ` WHERE ${where.join(" AND ")}` : ""} ORDER BY created_at DESC LIMIT 200`;
   const [rows] = await pool.query(sql, params);
   return rows.map((row) => rowToMembership(row, today));
+}
+
+export async function findProvisionalMembership(id) {
+  const [rows] = await pool.query("SELECT * FROM provisional_memberships WHERE id = ?", [String(id)]);
+  return rows[0] ? rowToMembership(rows[0], todayString()) : null;
+}
+
+export async function setConfirmationStatus(id, status) {
+  await pool.query("UPDATE provisional_memberships SET confirmation = ? WHERE id = ?", [status, String(id)]);
 }
 
 export async function deleteProvisionalMembership(id) {

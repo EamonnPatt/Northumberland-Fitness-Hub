@@ -29,8 +29,11 @@ type ProvisionalMembership = {
   employee: string;
   createdBy: string;
   createdAt: string;
+  confirmation: "" | "sent" | "failed" | "skipped";
   status: Status;
 };
+
+type Notification = { status: "sent" | "failed" | "skipped"; message: string };
 
 type PricingTier = { id: string; price: string };
 
@@ -73,6 +76,7 @@ export default function ProvisionalMemberships({ pricing }: { pricing: PricingTi
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("all");
   const [created, setCreated] = useState<ProvisionalMembership | null>(null);
+  const [notice, setNotice] = useState<Notification | null>(null);
 
   const load = useCallback(async () => {
     const params = new URLSearchParams();
@@ -97,12 +101,33 @@ export default function ProvisionalMemberships({ pricing }: { pricing: PricingTi
     return () => clearTimeout(timer);
   }, [load]);
 
+  async function resend(m: ProvisionalMembership) {
+    try {
+      const data = await apiFetch(`/api/admin/provisional/${m._id}/resend`, { method: "POST" });
+      setMemberships((prev) => prev?.map((x) => (x._id === m._id ? data.membership : x)) ?? null);
+      toast({
+        title: data.notification.status === "sent" ? "Sent" : "Not sent",
+        description: data.notification.message,
+        variant: data.notification.status === "sent" ? "default" : "destructive",
+      });
+    } catch (err) {
+      toast({
+        title: "Couldn't resend",
+        description: err instanceof Error ? err.message : "Something went wrong.",
+        variant: "destructive",
+      });
+    }
+  }
+
   async function remove(m: ProvisionalMembership) {
     if (!window.confirm(`Delete ${m.firstName} ${m.lastName}'s ${m.plan} pass (key ${m.key})? This can't be undone.`)) return;
     try {
       await apiFetch(`/api/admin/provisional/${m._id}`, { method: "DELETE" });
       setMemberships((prev) => prev?.filter((x) => x._id !== m._id) ?? null);
-      if (created?._id === m._id) setCreated(null);
+      if (created?._id === m._id) {
+        setCreated(null);
+        setNotice(null);
+      }
       toast({ title: "Deleted", description: "Membership removed." });
     } catch (err) {
       toast({
@@ -117,8 +142,9 @@ export default function ProvisionalMemberships({ pricing }: { pricing: PricingTi
     <div className="space-y-6">
       <AddForm
         pricing={pricing}
-        onCreated={(m) => {
+        onCreated={(m, notification) => {
           setCreated(m);
+          setNotice(notification);
           load();
         }}
       />
@@ -133,7 +159,14 @@ export default function ProvisionalMemberships({ pricing }: { pricing: PricingTi
             <p className="text-5xl font-bold tracking-[0.3em] mt-2" data-testid="provisional-created-key">
               {created.key}
             </p>
-            <p className="text-sm mt-1">Give the customer this key.</p>
+            <p className="text-sm mt-1" data-testid="provisional-created-notice">
+              {notice?.status === "sent" ? notice.message : "Give the customer this key."}
+            </p>
+            {notice && notice.status !== "sent" && (
+              <p className="text-sm mt-2 inline-block bg-white text-destructive font-semibold px-3 py-1 rounded">
+                {notice.message}
+              </p>
+            )}
           </CardContent>
         </Card>
       )}
@@ -175,6 +208,7 @@ export default function ProvisionalMemberships({ pricing }: { pricing: PricingTi
                     <TableHead>Valid</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Contact</TableHead>
+                    <TableHead>Confirmation</TableHead>
                     <TableHead>Paid</TableHead>
                     <TableHead>Handled by</TableHead>
                     <TableHead>Added</TableHead>
@@ -201,6 +235,23 @@ export default function ProvisionalMemberships({ pricing }: { pricing: PricingTi
                       <TableCell>
                         {m.phone || "—"}
                         {m.email && <div className="text-xs text-muted-foreground">{m.email}</div>}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {m.confirmation === "sent" && <span className="text-green-700 font-medium">Emailed</span>}
+                        {m.confirmation === "failed" && <span className="text-destructive font-medium">Failed</span>}
+                        {m.confirmation === "skipped" && <span className="text-muted-foreground">Not sent</span>}
+                        {m.confirmation === "" && "—"}
+                        {m.email && (
+                          <Button
+                            variant="link"
+                            size="sm"
+                            className="h-auto p-0 ml-2"
+                            onClick={() => resend(m)}
+                            data-testid={`provisional-resend-${m.key}`}
+                          >
+                            {m.confirmation === "sent" ? "Resend" : "Send"}
+                          </Button>
+                        )}
                       </TableCell>
                       <TableCell>{m.price ? `$${m.price}` : "—"}</TableCell>
                       <TableCell>{m.employee || "—"}</TableCell>
@@ -241,7 +292,7 @@ export default function ProvisionalMemberships({ pricing }: { pricing: PricingTi
 
 const emptyForm = { firstName: "", lastName: "", phone: "", email: "", employee: "", notes: "" };
 
-function AddForm({ pricing, onCreated }: { pricing: PricingTier[]; onCreated: (m: ProvisionalMembership) => void }) {
+function AddForm({ pricing, onCreated }: { pricing: PricingTier[]; onCreated: (m: ProvisionalMembership, notification: Notification) => void }) {
   const { toast } = useToast();
   const [form, setForm] = useState(emptyForm);
   const [plan, setPlan] = useState<Plan>("daily");
@@ -260,17 +311,28 @@ function AddForm({ pricing, onCreated }: { pricing: PricingTier[]; onCreated: (m
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (!form.phone.trim() && !form.email.trim()) {
+      toast({
+        title: "Contact needed",
+        description: "Enter a phone number or an email address.",
+        variant: "destructive",
+      });
+      return;
+    }
     setSaving(true);
     try {
       const data = await apiFetch("/api/admin/provisional", {
         method: "POST",
         body: JSON.stringify({ ...form, plan, startDate, price: shownPrice }),
       });
-      onCreated(data.membership);
+      onCreated(data.membership, data.notification);
       setForm(emptyForm);
       setStartDate(today());
       setPriceEdited(false);
-      toast({ title: "Added", description: `Key ${data.membership.key} for ${data.membership.firstName}.` });
+      toast({
+        title: "Added",
+        description: `Key ${data.membership.key} for ${data.membership.firstName}. ${data.notification.message}`,
+      });
     } catch (err) {
       toast({
         title: "Couldn't add membership",
@@ -302,9 +364,9 @@ function AddForm({ pricing, onCreated }: { pricing: PricingTier[]; onCreated: (m
               required
               data-testid="provisional-last-name"
             />
-            <Input placeholder="Phone (optional)" type="tel" value={form.phone} onChange={(e) => set("phone", e.target.value)} />
+            <Input placeholder="Phone (phone or email required)" type="tel" value={form.phone} onChange={(e) => set("phone", e.target.value)} />
             <Input
-              placeholder="Email (optional)"
+              placeholder="Email (gets the sign-in code)"
               type="email"
               value={form.email}
               onChange={(e) => set("email", e.target.value)}
