@@ -52,6 +52,7 @@ function rowToMembership(row, today) {
     startDate: row.start_date,
     endDate: row.end_date,
     notes: row.notes,
+    employee: row.employee,
     createdBy: row.created_by,
     createdAt: row.created_at,
     status: statusFor(row, today),
@@ -76,6 +77,9 @@ export async function createProvisionalMembership(input, createdBy) {
   const firstName = trimmed(input.firstName);
   const lastName = trimmed(input.lastName);
   if (!firstName || !lastName) throw new ProvisionalValidationError("First and last name are required.");
+  const employee = trimmed(input.employee);
+  if (!employee) throw new ProvisionalValidationError("Enter the employee who handled the transaction.");
+  if (employee.length > 100) throw new ProvisionalValidationError("Employee name is too long.");
   if (!PLAN_OPTIONS.includes(input.plan)) throw new ProvisionalValidationError("Choose daily, weekly or monthly.");
   const today = todayString();
   const startDate = input.startDate ? trimmed(input.startDate) : today;
@@ -95,6 +99,7 @@ export async function createProvisionalMembership(input, createdBy) {
     start_date: startDate,
     end_date: endDateFor(input.plan, startDate),
     notes: trimmed(input.notes),
+    employee,
     created_by: createdBy || "",
     created_at: new Date(),
   };
@@ -114,8 +119,8 @@ export async function listProvisionalMemberships({ query = "", status = "" } = {
     params.push(q);
   } else if (q) {
     const like = `%${q.replace(/[\%_]/g, "\$&")}%`;
-    where.push("(CONCAT(first_name, ' ', last_name) LIKE ? OR phone LIKE ? OR email LIKE ?)");
-    params.push(like, like, like);
+    where.push("(CONCAT(first_name, ' ', last_name) LIKE ? OR phone LIKE ? OR email LIKE ? OR employee LIKE ?)");
+    params.push(like, like, like, like);
   }
   if (status === "active") {
     where.push("start_date <= ? AND end_date >= ?");

@@ -26,7 +26,9 @@ type ProvisionalMembership = {
   startDate: string;
   endDate: string;
   notes: string;
+  employee: string;
   createdBy: string;
+  createdAt: string;
   status: Status;
 };
 
@@ -47,6 +49,18 @@ const STATUS_STYLE: Record<Status, string> = {
 // The gym's calendar day, so the form defaults to the right date late in the evening too.
 function today() {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Toronto" }).format(new Date());
+}
+
+// When the pass was entered, in the gym's time zone whatever the viewer's computer is set to.
+function formatTimestamp(value: string) {
+  return new Date(value).toLocaleString("en-CA", {
+    timeZone: "America/Toronto",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
 }
 
 function formatDate(value: string) {
@@ -162,6 +176,8 @@ export default function ProvisionalMemberships({ pricing }: { pricing: PricingTi
                     <TableHead>Status</TableHead>
                     <TableHead>Contact</TableHead>
                     <TableHead>Paid</TableHead>
+                    <TableHead>Handled by</TableHead>
+                    <TableHead>Added</TableHead>
                     <TableHead>Notes</TableHead>
                     <TableHead />
                   </TableRow>
@@ -187,6 +203,10 @@ export default function ProvisionalMemberships({ pricing }: { pricing: PricingTi
                         {m.email && <div className="text-xs text-muted-foreground">{m.email}</div>}
                       </TableCell>
                       <TableCell>{m.price ? `$${m.price}` : "—"}</TableCell>
+                      <TableCell>{m.employee || "—"}</TableCell>
+                      <TableCell className="whitespace-nowrap" data-testid={`provisional-added-${m.key}`}>
+                        {formatTimestamp(m.createdAt)}
+                      </TableCell>
                       <TableCell className="max-w-48 whitespace-normal">{m.notes || "—"}</TableCell>
                       <TableCell>
                         <Button
@@ -219,7 +239,7 @@ export default function ProvisionalMemberships({ pricing }: { pricing: PricingTi
   );
 }
 
-const emptyForm = { firstName: "", lastName: "", phone: "", email: "", notes: "" };
+const emptyForm = { firstName: "", lastName: "", phone: "", email: "", employee: "", notes: "" };
 
 function AddForm({ pricing, onCreated }: { pricing: PricingTier[]; onCreated: (m: ProvisionalMembership) => void }) {
   const { toast } = useToast();
@@ -304,17 +324,30 @@ function AddForm({ pricing, onCreated }: { pricing: PricingTier[]; onCreated: (m
               </SelectContent>
             </Select>
             <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} required aria-label="Start date" />
-            <Input
-              placeholder="Amount paid, e.g. 40.00"
-              inputMode="decimal"
-              value={shownPrice}
-              onChange={(e) => {
-                setPrice(e.target.value);
-                setPriceEdited(true);
-              }}
-              aria-label="Amount paid before HST"
-            />
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">$</span>
+              <Input
+                className="pl-7"
+                placeholder="Amount paid, e.g. 40.00"
+                inputMode="decimal"
+                value={shownPrice}
+                onChange={(e) => {
+                  setPrice(e.target.value.replace(/^\$/, ""));
+                  setPriceEdited(true);
+                }}
+                aria-label="Amount paid in dollars before HST"
+                data-testid="provisional-price"
+              />
+            </div>
           </div>
+          <Input
+            placeholder="Employee who handled the transaction"
+            value={form.employee}
+            onChange={(e) => set("employee", e.target.value)}
+            required
+            maxLength={100}
+            data-testid="provisional-employee"
+          />
           <Textarea placeholder="Notes (optional)" value={form.notes} onChange={(e) => set("notes", e.target.value)} />
           <Button type="submit" disabled={saving} data-testid="provisional-add">
             {saving ? "Adding…" : "Add Membership"}

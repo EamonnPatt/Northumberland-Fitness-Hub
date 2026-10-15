@@ -44,6 +44,7 @@ const SCHEMA = [
     start_date CHAR(10) NOT NULL,
     end_date CHAR(10) NOT NULL,
     notes TEXT NOT NULL,
+    employee VARCHAR(100) NOT NULL DEFAULT '',
     created_by VARCHAR(255) NOT NULL DEFAULT '',
     created_at DATETIME(3) NOT NULL,
     KEY provisional_key (member_key),
@@ -51,6 +52,22 @@ const SCHEMA = [
     KEY provisional_created_at (created_at)
   ) DEFAULT CHARSET=utf8mb4`,
 ];
+
+// CREATE TABLE IF NOT EXISTS leaves existing tables alone, so columns added
+// after a table was first created are added here.
+const ADDED_COLUMNS = [
+  { table: "provisional_memberships", column: "employee", definition: "VARCHAR(100) NOT NULL DEFAULT '' AFTER notes" },
+];
+
+async function addMissingColumns() {
+  for (const { table, column, definition } of ADDED_COLUMNS) {
+    const [rows] = await pool.query(
+      "SELECT 1 FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = ? AND column_name = ?",
+      [table, column],
+    );
+    if (rows.length === 0) await pool.query(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+  }
+}
 
 export async function connectDb() {
   const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
@@ -71,5 +88,6 @@ export async function connectDb() {
   for (const statement of SCHEMA) {
     await pool.query(statement);
   }
+  await addMissingColumns();
   console.log("Connected to MySQL");
 }
