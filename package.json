@@ -5,7 +5,7 @@
   "packageManager": "pnpm@10.34.7",
   "scripts": {
     "build": "cd server && npm install",
-    "sta rt": "node server/src/index.js",
+    "start": "node server/src/index.js",
     "build:workspace": "pnpm run typecheck && pnpm -r --if-present run build",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck"
