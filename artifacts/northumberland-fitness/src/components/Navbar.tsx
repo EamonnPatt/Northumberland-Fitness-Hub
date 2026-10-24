@@ -81,7 +81,7 @@ export default function Navbar() {
       )}
     >
       <div className="grand-opening-banner" data-testid="grand-opening-banner">
-        <span className="relative z-10">★ Grand Opening — October 26 ★</span>
+        <span className="relative z-10">★ Membership Registration Open Now! ★</span>
       </div>
       <div className="container mx-auto px-4 md:px-6 py-2 flex items-center justify-between">
         <div
