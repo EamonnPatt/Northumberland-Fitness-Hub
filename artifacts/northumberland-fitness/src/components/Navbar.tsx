@@ -81,7 +81,7 @@ export default function Navbar() {
       )}
     >
       <div className="grand-opening-banner" data-testid="grand-opening-banner">
-        <span className="relative z-10 block">★ Memberships Are Now Open! ★</span>
+        <span className="grand-opening-banner-title relative z-10 block">★ Memberships Are Now Open! ★</span>
         <span className="grand-opening-banner-sub relative z-10 block">
           Join today and take advantage of our special introductory offers. Come in, tour the
           facility, and see everything we have to offer!

@@ -161,31 +161,45 @@
 
 @layer components {
   .grand-opening-banner {
-    @apply relative overflow-hidden text-center py-2 px-4 text-sm md:text-base font-bold uppercase tracking-widest;
-    color: #3b2a00;
+    @apply relative overflow-hidden text-center py-2.5 px-4 text-white;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgb(245 215 110 / 0.18), transparent 60%),
+      linear-gradient(90deg, #0f2547, #1c3d73 50%, #0f2547);
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(90deg, transparent, #f5d76e 20%, #fff3b0 50%, #f5d76e 80%, transparent) 1;
+  }
+
+  .grand-opening-banner-title {
+    @apply text-base md:text-lg font-extrabold uppercase tracking-[0.2em];
+    font-family: var(--app-font-serif, inherit);
     background: linear-gradient(90deg, #b8860b, #f5d76e 25%, #fff3b0 50%, #f5d76e 75%, #b8860b);
     background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
     animation: grand-opening-gradient 6s linear infinite;
-    text-shadow: 0 1px 0 rgb(255 255 255 / 0.5);
   }
 
   .grand-opening-banner-sub {
-    @apply text-xs md:text-sm font-semibold normal-case tracking-normal;
+    @apply mt-0.5 text-xs md:text-sm font-medium normal-case tracking-wide;
+    color: rgb(255 255 255 / 0.88);
   }
 
-  /* Light sweep that glints across the banner. */
+  /* Soft light sweep that glints across the banner. */
   .grand-opening-banner::after {
     content: "";
     position: absolute;
     inset: 0;
-    width: 40%;
-    background: linear-gradient(110deg, transparent, rgb(255 255 255 / 0.85), transparent);
+    width: 30%;
+    background: linear-gradient(110deg, transparent, rgb(255 243 176 / 0.22), transparent);
     transform: translateX(-150%) skewX(-20deg);
-    animation: grand-opening-shine 3s ease-in-out infinite;
+    animation: grand-opening-shine 4s ease-in-out infinite;
+    pointer-events: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .grand-opening-banner,
+    .grand-opening-banner-title,
     .grand-opening-banner::after {
       animation: none;
     }
