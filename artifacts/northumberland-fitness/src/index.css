@@ -169,6 +169,10 @@
     text-shadow: 0 1px 0 rgb(255 255 255 / 0.5);
   }
 
+  .grand-opening-banner-sub {
+    @apply text-xs md:text-sm font-semibold normal-case tracking-normal;
+  }
+
   /* Light sweep that glints across the banner. */
   .grand-opening-banner::after {
     content: "";
