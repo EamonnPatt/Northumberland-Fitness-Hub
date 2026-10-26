@@ -161,7 +161,7 @@
 
 @layer components {
   .grand-opening-banner {
-    @apply relative overflow-hidden text-center py-2.5 px-4 text-white;
+    @apply relative block overflow-hidden text-center py-2.5 px-4 text-white cursor-pointer transition-[filter] duration-200 hover:brightness-125;
     background:
       radial-gradient(ellipse at 50% 0%, rgb(245 215 110 / 0.18), transparent 60%),
       linear-gradient(90deg, #0f2547, #1c3d73 50%, #0f2547);

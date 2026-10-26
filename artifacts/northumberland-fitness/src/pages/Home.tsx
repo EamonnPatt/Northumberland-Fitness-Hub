@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { MEMBER_ACCOUNTS_ENABLED } from "@/lib/site-mode";
+import { MEMBER_ACCOUNTS_ENABLED, MEMBERSHIP_SALES_URL } from "@/lib/site-mode";
 
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -572,15 +572,20 @@ export default function Home() {
               <motion.div variants={itemVariant}>
                 <Button
                   size="lg"
-                  onClick={() =>
-                    MEMBER_ACCOUNTS_ENABLED
-                      ? navigate("/register")
-                      : document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })
-                  }
+                  onClick={MEMBER_ACCOUNTS_ENABLED ? () => navigate("/register") : undefined}
+                  asChild={!MEMBER_ACCOUNTS_ENABLED}
                   className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-none h-16 text-xl uppercase font-bold tracking-wider flex gap-2 items-center"
                   data-testid="register-cta"
                 >
-                  {MEMBER_ACCOUNTS_ENABLED ? "Create an Account" : "View Memberships"} <ArrowRight className="w-6 h-6" />
+                  {MEMBER_ACCOUNTS_ENABLED ? (
+                    <>
+                      Create an Account <ArrowRight className="w-6 h-6" />
+                    </>
+                  ) : (
+                    <a href={MEMBERSHIP_SALES_URL} target="_blank" rel="noopener noreferrer">
+                      Buy a Membership <ArrowRight className="w-6 h-6" />
+                    </a>
+                  )}
                 </Button>
               </motion.div>
             </motion.div>

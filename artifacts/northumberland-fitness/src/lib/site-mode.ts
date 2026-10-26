@@ -6,3 +6,6 @@ export const IS_ADMIN_SITE = import.meta.env.VITE_ADMIN_SITE === "true";
 // Memberships are sold through FLiiP, so member accounts on this site are
 // hidden. Flip to true to bring back /login, /register and /account.
 export const MEMBER_ACCOUNTS_ENABLED = false;
+
+// FLiiP checkout the banner and "Join Us Today" buttons send visitors to.
+export const MEMBERSHIP_SALES_URL = "https://northumberland.fliipapp.com/user/register/buy_membership/1/71597";

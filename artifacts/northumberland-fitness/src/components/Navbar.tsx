@@ -3,7 +3,7 @@ import { Menu, X, UserRound } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
-import { MEMBER_ACCOUNTS_ENABLED } from "@/lib/site-mode";
+import { MEMBER_ACCOUNTS_ENABLED, MEMBERSHIP_SALES_URL } from "@/lib/site-mode";
 import logoSrc from "@assets/northumberland_logo.png";
 
 
@@ -80,13 +80,19 @@ export default function Navbar() {
         isScrolled ? "bg-white shadow-lg" : "bg-white/95 backdrop-blur-sm"
       )}
     >
-      <div className="grand-opening-banner" data-testid="grand-opening-banner">
+      <a
+        href={MEMBERSHIP_SALES_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="grand-opening-banner"
+        data-testid="grand-opening-banner"
+      >
         <span className="grand-opening-banner-title relative z-10 block">★ Memberships Are Now Open! ★</span>
         <span className="grand-opening-banner-sub relative z-10 block">
           Join today and take advantage of our special introductory offers. Come in, tour the
           facility, and see everything we have to offer!
         </span>
-      </div>
+      </a>
       <div className="container mx-auto px-4 md:px-6 py-2 flex items-center justify-between">
         <div
           className="cursor-pointer shrink-0"
