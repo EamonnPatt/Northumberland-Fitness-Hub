@@ -333,7 +333,7 @@ function PricingEditor({
     <div className="space-y-6">
       <p className="text-sm text-muted-foreground">
         Prices are in dollars before 13% HST. Paste the checkout link the Buy Membership button should open; leave it
-        blank to show &ldquo;Coming Soon&rdquo;.
+        blank to send buyers to the general membership sales page.
       </p>
       {PRICING_GROUPS.map((group) => (
         <div key={group.title} className="space-y-4">

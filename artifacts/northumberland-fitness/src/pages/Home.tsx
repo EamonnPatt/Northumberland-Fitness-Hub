@@ -39,7 +39,7 @@ type MembershipTier = {
   name: string;
   price: string;
   description: string;
-  // Checkout link the button opens; the admin panel edits it. Empty shows "Coming Soon".
+  // Checkout link the button opens; the admin panel edits it. Empty falls back to the general sales link.
   link?: string;
   // Fixed FLiiP plan id, for tiers whose link isn't editable.
   fliipId?: string;
@@ -409,7 +409,8 @@ export default function Home() {
               >
                 {group.tiers.map((baseTier) => {
                   const tier = applyPricing(baseTier, pricing);
-                  const href = tier.link || (tier.fliipId ? `${FLIIP_BUY_URL}/${tier.fliipId}` : "");
+                  // The sales page lets the buyer pick their plan, so it covers any tier without its own link.
+                  const href = tier.link || (tier.fliipId ? `${FLIIP_BUY_URL}/${tier.fliipId}` : MEMBERSHIP_SALES_URL);
                   return (
                   <motion.div key={tier.id} variants={itemVariant}>
                     <Card className="h-full bg-white border-none shadow-lg text-center">
