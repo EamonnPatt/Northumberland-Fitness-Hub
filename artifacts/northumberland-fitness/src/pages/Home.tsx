@@ -5,6 +5,7 @@ import { MEMBER_ACCOUNTS_ENABLED, MEMBERSHIP_SALES_URL } from "@/lib/site-mode";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import HeroSlider from "@/components/HeroSlider";
+import MembershipFaq from "@/components/MembershipFaq";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -387,6 +388,7 @@ export default function Home() {
                 membership. Show proof at the front desk.
               </p>
             </div>
+            <MembershipFaq annualFee={ANNUAL_FEE} />
           </div>
           {MEMBERSHIP_GROUPS.filter((group) => !group.hidden).map((group) => (
             <div key={group.title} className="mb-16 last:mb-0">
