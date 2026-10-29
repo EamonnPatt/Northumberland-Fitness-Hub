@@ -1,5 +1,5 @@
 import React from "react";
-import { CircleHelp } from "lucide-react";
+import { CircleHelp, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -64,8 +64,19 @@ export default function MembershipFaq({ annualFee }: { annualFee: number }) {
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto" data-testid="membership-faq">
         <DialogHeader>
           <DialogTitle className="text-2xl font-serif text-secondary uppercase">Membership Q &amp; A</DialogTitle>
-          <DialogDescription>Quick answers about our memberships, including Group and Couples.</DialogDescription>
+          <DialogDescription>Quick answers about our memberships, including Group and Couples, and how to get your barcode.</DialogDescription>
         </DialogHeader>
+        <div className="flex gap-4 border-l-8 border-primary bg-muted p-4" data-testid="membership-faq-barcode">
+          <Smartphone className="w-8 h-8 shrink-0 text-primary" />
+          <div className="text-secondary">
+            <h3 className="font-serif text-lg font-bold uppercase">How to get your barcode to sign in</h3>
+            <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm">
+              <li>Download the FLiiP app.</li>
+              <li>Log in with the credentials you chose when you signed up for your membership.</li>
+              <li>In the app you can see your barcode, class schedules and other details.</li>
+            </ol>
+          </div>
+        </div>
         <Accordion type="single" collapsible className="w-full">
           {faqs.map((faq, index) => (
             <AccordionItem key={faq.question} value={`faq-${index}`}>
