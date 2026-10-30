@@ -334,9 +334,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Class Timetable */}
-      {classes.length > 0 && (
-        <section id="timetable" className="py-24 bg-white">
+      {/* Class Timetable — shows "Coming Soon" until classes are added in the admin panel. */}
+      <section id="timetable" className="py-24 bg-white">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-serif text-secondary mb-4 flex items-center justify-center gap-3">
@@ -344,6 +343,14 @@ export default function Home() {
               </h2>
               <div className="w-24 h-2 bg-primary mx-auto"></div>
             </div>
+            {classes.length === 0 ? (
+              <p
+                className="max-w-3xl mx-auto py-10 px-6 text-center bg-muted border-l-4 border-primary text-2xl font-serif uppercase tracking-wider text-secondary"
+                data-testid="timetable-coming-soon"
+              >
+                Coming Soon
+              </p>
+            ) : (
             <motion.div
               className="max-w-3xl mx-auto space-y-4"
               initial="hidden"
@@ -365,9 +372,9 @@ export default function Home() {
                 </motion.div>
               ))}
             </motion.div>
+            )}
           </div>
         </section>
-      )}
 
       {/* Membership Pricing */}
       <section id="pricing" className="py-24 bg-muted">
