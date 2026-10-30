@@ -7,5 +7,9 @@ export const IS_ADMIN_SITE = import.meta.env.VITE_ADMIN_SITE === "true";
 // hidden. Flip to true to bring back /login, /register and /account.
 export const MEMBER_ACCOUNTS_ENABLED = false;
 
+// Shows "Coming Soon" in place of the class timetable, even if classes are saved in the admin
+// panel. Flip to false once the real timetable is ready to show them.
+export const TIMETABLE_COMING_SOON = true;
+
 // FLiiP checkout the banner and "Join Us Today" buttons send visitors to.
 export const MEMBERSHIP_SALES_URL = "https://northumberland.fliipapp.com/user/register/buy_membership/1/71597";

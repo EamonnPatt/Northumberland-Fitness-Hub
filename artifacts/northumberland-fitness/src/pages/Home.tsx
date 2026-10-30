@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { MEMBER_ACCOUNTS_ENABLED, MEMBERSHIP_SALES_URL } from "@/lib/site-mode";
+import { MEMBER_ACCOUNTS_ENABLED, MEMBERSHIP_SALES_URL, TIMETABLE_COMING_SOON } from "@/lib/site-mode";
 
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -343,7 +343,7 @@ export default function Home() {
               </h2>
               <div className="w-24 h-2 bg-primary mx-auto"></div>
             </div>
-            {classes.length === 0 ? (
+            {TIMETABLE_COMING_SOON || classes.length === 0 ? (
               <p
                 className="max-w-3xl mx-auto py-10 px-6 text-center bg-muted border-l-4 border-primary text-2xl font-serif uppercase tracking-wider text-secondary"
                 data-testid="timetable-coming-soon"
