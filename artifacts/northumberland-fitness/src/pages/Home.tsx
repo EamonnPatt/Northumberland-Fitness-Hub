@@ -23,9 +23,9 @@ const DEFAULT_HOURS = [
   { day: "Tuesday", hours: "5:00 AM — 10:00 PM" },
   { day: "Wednesday", hours: "5:00 AM — 10:00 PM" },
   { day: "Thursday", hours: "5:00 AM — 10:00 PM" },
-  { day: "Friday", hours: "5:00 AM — 10:00 PM" },
-  { day: "Saturday", hours: "5:00 AM — 10:00 PM" },
-  { day: "Sunday", hours: "5:00 AM — 10:00 PM" },
+  { day: "Friday", hours: "5:00 AM — 9:00 PM" },
+  { day: "Saturday", hours: "8:00 AM — 9:00 PM" },
+  { day: "Sunday", hours: "8:00 AM — 9:00 PM" },
 ];
 
 type ClassRow = { name: string; day: string; time: string; instructor: string };

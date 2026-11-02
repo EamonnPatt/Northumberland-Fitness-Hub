@@ -70,9 +70,9 @@ export const DEFAULT_CONTENT = {
     { day: "Tuesday", hours: "5:00 AM — 10:00 PM" },
     { day: "Wednesday", hours: "5:00 AM — 10:00 PM" },
     { day: "Thursday", hours: "5:00 AM — 10:00 PM" },
-    { day: "Friday", hours: "5:00 AM — 10:00 PM" },
-    { day: "Saturday", hours: "5:00 AM — 10:00 PM" },
-    { day: "Sunday", hours: "5:00 AM — 10:00 PM" },
+    { day: "Friday", hours: "5:00 AM — 9:00 PM" },
+    { day: "Saturday", hours: "8:00 AM — 9:00 PM" },
+    { day: "Sunday", hours: "8:00 AM — 9:00 PM" },
   ],
   classes: [
     { name: "HIIT Blast", day: "Monday", time: "6:00 PM", instructor: "TBD" },
