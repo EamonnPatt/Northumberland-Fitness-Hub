@@ -3,7 +3,6 @@ import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { apiFetch } from "@/lib/api";
-import { MEMBERSHIP_SALES_URL } from "@/lib/site-mode";
 
 type Slide = { image: string; title: string; subtitle: string };
 
@@ -101,7 +100,13 @@ export default function HeroSlider() {
                     data-testid={`hero-cta-${index}`}
                     asChild
                   >
-                    <a href={MEMBERSHIP_SALES_URL} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href="#pricing"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+                      }}
+                    >
                       Join Us Today
                     </a>
                   </Button>
