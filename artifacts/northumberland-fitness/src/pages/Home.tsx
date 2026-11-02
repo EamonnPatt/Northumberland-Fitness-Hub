@@ -42,7 +42,7 @@ type MembershipTier = {
   description: string;
   // Checkout link the button opens; the admin panel edits it. Empty falls back to the general sales link.
   link?: string;
-  // Fixed FLiiP plan id, for tiers whose link isn't editable.
+  // FLiiP plan id for tiers with their own checkout page; a link set in the admin panel overrides it.
   fliipId?: string;
   // Billing period shown under the price (default "month").
   period?: "day" | "week" | "month";
@@ -65,9 +65,9 @@ const MEMBERSHIP_GROUPS: MembershipGroup[] = [
     title: "Regular Memberships",
     description: "Monthly, auto-renewing, with a 1-year commitment.",
     tiers: [
-      { id: "regular", name: "Individual", price: "60.00", description: "Full access for one member" },
-      { id: "group", name: "Group", price: "225.00", description: "Up to 5 people, billed to one person" },
-      { id: "sweat-hearts", name: "Couples", price: "110.00", description: "Full access for two — gym and classes" },
+      { id: "regular", name: "Individual", price: "60.00", description: "Full access for one member", fliipId: "72022" },
+      { id: "group", name: "Group", price: "225.00", description: "Up to 5 people, billed to one person", fliipId: "72023" },
+      { id: "sweat-hearts", name: "Couples", price: "110.00", description: "Full access for two — gym and classes", fliipId: "72024" },
     ],
   },
   {
