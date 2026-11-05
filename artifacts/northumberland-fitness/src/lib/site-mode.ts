@@ -14,5 +14,8 @@ export const TIMETABLE_COMING_SOON = true;
 // Hides the "Specialized Programs" section and its navbar/footer links. Flip to true to show it again.
 export const SHOW_PROGRAMS = false;
 
-// FLiiP checkout the banner and "Join Us Today" buttons send visitors to.
+// General FLiiP page where the buyer picks a plan: the "Buy a Membership" button and plan cards without their own link.
 export const MEMBERSHIP_SALES_URL = "https://northumberland.fliipapp.com/user/register/buy_membership/1/71597";
+
+// FLiiP checkout for the Individual membership, which the navbar banner sends visitors to.
+export const INDIVIDUAL_MEMBERSHIP_URL = "https://northumberland.fliipapp.com/user/register/buy_membership/1/72022";

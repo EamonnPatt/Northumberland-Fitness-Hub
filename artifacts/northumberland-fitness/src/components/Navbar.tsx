@@ -3,7 +3,7 @@ import { Menu, X, UserRound } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
-import { MEMBER_ACCOUNTS_ENABLED, MEMBERSHIP_SALES_URL, SHOW_PROGRAMS } from "@/lib/site-mode";
+import { INDIVIDUAL_MEMBERSHIP_URL, MEMBER_ACCOUNTS_ENABLED, SHOW_PROGRAMS } from "@/lib/site-mode";
 import logoSrc from "@assets/northumberland_logo.png";
 
 
@@ -81,7 +81,7 @@ export default function Navbar() {
       )}
     >
       <a
-        href={MEMBERSHIP_SALES_URL}
+        href={INDIVIDUAL_MEMBERSHIP_URL}
         target="_blank"
         rel="noopener noreferrer"
         className="grand-opening-banner"
