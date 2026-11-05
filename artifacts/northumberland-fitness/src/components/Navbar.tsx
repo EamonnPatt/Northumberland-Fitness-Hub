@@ -3,7 +3,7 @@ import { Menu, X, UserRound } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
-import { MEMBER_ACCOUNTS_ENABLED, MEMBERSHIP_SALES_URL } from "@/lib/site-mode";
+import { MEMBER_ACCOUNTS_ENABLED, MEMBERSHIP_SALES_URL, SHOW_PROGRAMS } from "@/lib/site-mode";
 import logoSrc from "@assets/northumberland_logo.png";
 
 
@@ -11,7 +11,7 @@ const NAV_LINKS = [
   { label: "Home", id: "home" },
   { label: "About Us", id: "about" },
   { label: "Mission & Vision", id: "mission" },
-  { label: "Programs", id: "programs" },
+  ...(SHOW_PROGRAMS ? [{ label: "Programs", id: "programs" }] : []),
   { label: "Club Hours", id: "hours" },
   { label: "Memberships", id: "pricing" },
   { label: "Contact", id: "contact" },

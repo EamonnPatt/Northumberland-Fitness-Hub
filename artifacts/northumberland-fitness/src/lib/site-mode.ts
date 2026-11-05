@@ -11,5 +11,8 @@ export const MEMBER_ACCOUNTS_ENABLED = false;
 // panel. Flip to false once the real timetable is ready to show them.
 export const TIMETABLE_COMING_SOON = true;
 
+// Hides the "Specialized Programs" section and its navbar/footer links. Flip to true to show it again.
+export const SHOW_PROGRAMS = false;
+
 // FLiiP checkout the banner and "Join Us Today" buttons send visitors to.
 export const MEMBERSHIP_SALES_URL = "https://northumberland.fliipapp.com/user/register/buy_membership/1/71597";

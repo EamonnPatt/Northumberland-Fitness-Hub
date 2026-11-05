@@ -3,6 +3,7 @@ import { CircleHelp, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import fliipLogoSrc from "@assets/fliip_app_logo.png";
 
 type Faq = { question: string; answer: string };
 
@@ -71,7 +72,19 @@ export default function MembershipFaq({ annualFee }: { annualFee: number }) {
           <div className="text-secondary">
             <h3 className="font-serif text-lg font-bold uppercase">How to get your barcode to sign in</h3>
             <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm">
-              <li>Download the FLiiP app.</li>
+              <li>
+                <span className="flex items-center justify-between gap-3">
+                  <span>
+                    Download the <strong>FLiiP</strong> app (spelled F-L-i-i-P). Do not download &ldquo;Flipp&rdquo;, which is a different app.
+                  </span>
+                  <img
+                    src={fliipLogoSrc}
+                    alt="FLiiP app logo"
+                    className="h-12 w-12 shrink-0 rounded-xl"
+                    data-testid="membership-faq-fliip-logo"
+                  />
+                </span>
+              </li>
               <li>Log in with the credentials you chose when you signed up for your membership.</li>
               <li>In the app you can see your barcode, class schedules and other details.</li>
             </ol>

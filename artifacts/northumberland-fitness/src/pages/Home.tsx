@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { MEMBER_ACCOUNTS_ENABLED, MEMBERSHIP_SALES_URL, TIMETABLE_COMING_SOON } from "@/lib/site-mode";
+import { MEMBER_ACCOUNTS_ENABLED, MEMBERSHIP_SALES_URL, SHOW_PROGRAMS, TIMETABLE_COMING_SOON } from "@/lib/site-mode";
 
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -204,7 +204,7 @@ export default function Home() {
             </motion.h2>
             <motion.div variants={itemVariant} className="w-24 h-2 bg-primary mx-auto mb-8"></motion.div>
             <motion.p variants={itemVariant} className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-              Welcome to Northumberland Fitness, a modern fitness club built for real people, real goals, and real progress. We combine a clean, well-maintained environment with high-quality equipment, certified trainers, and a supportive community that keeps you motivated every step of the way.
+              Welcome to Northumberland Fitness, a modern fitness club built for real people, real goals, and real progress. We combine a clean, well-maintained environment with high-quality equipment, a friendly team, and a supportive community that keeps you motivated every step of the way.
             </motion.p>
           </motion.div>
 
@@ -229,7 +229,7 @@ export default function Home() {
               {
                 icon: Users,
                 title: "Guidance From Professionals",
-                body: "Our certified trainers and knowledgeable staff are here to help you train smarter, improve technique, and get results that last."
+                body: "Our friendly, knowledgeable staff are here to help you train smarter, improve technique, and get results that last."
               }
             ].map((item, idx) => (
               <motion.div key={idx} variants={itemVariant} className="flex flex-col items-center text-center p-8 border-t-4 border-primary bg-muted">
@@ -298,6 +298,7 @@ export default function Home() {
       </section>
 
       {/* Programs */}
+      {SHOW_PROGRAMS && (
       <section id="programs" className="py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
@@ -333,6 +334,7 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+      )}
 
       {/* Class Timetable — shows "Coming Soon" until classes are added in the admin panel. */}
       <section id="timetable" className="py-24 bg-white">
@@ -609,7 +611,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
 
           <div className="flex flex-wrap justify-center gap-6 mb-8 text-sm font-medium uppercase tracking-wider">
-            {["Home", "About Us", "Programs", "Club Hours", "Contact"].map((item) => (
+            {["Home", "About Us", ...(SHOW_PROGRAMS ? ["Programs"] : []), "Club Hours", "Contact"].map((item) => (
               <a 
                 key={item} 
                 href={`#${item.toLowerCase().split(" ")[0]}`} 
