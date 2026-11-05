@@ -87,10 +87,12 @@ export default function Navbar() {
         className="grand-opening-banner"
         data-testid="grand-opening-banner"
       >
-        <span className="grand-opening-banner-title relative z-10 block">★ Memberships Are Now Open! ★</span>
+        <span className="relative z-10 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+          <span className="grand-opening-banner-title">Grand Opening</span>
+          <span className="grand-opening-banner-date">Saturday, November 7</span>
+        </span>
         <span className="grand-opening-banner-sub relative z-10 block">
-          Join today and take advantage of our special introductory offers. Come in, tour the
-          facility, and see everything we have to offer!
+          Come in, tour the facility, and see everything we have to offer!
         </span>
       </a>
       <div className="container mx-auto px-4 md:px-6 py-2 flex items-center justify-between">

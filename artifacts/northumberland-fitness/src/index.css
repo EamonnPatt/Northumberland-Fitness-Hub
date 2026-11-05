@@ -161,59 +161,51 @@
 
 @layer components {
   .grand-opening-banner {
-    @apply relative block overflow-hidden text-center py-2.5 px-4 text-white cursor-pointer transition-[filter] duration-200 hover:brightness-125;
-    background:
-      radial-gradient(ellipse at 50% 0%, rgb(245 215 110 / 0.18), transparent 60%),
-      linear-gradient(90deg, #0f2547, #1c3d73 50%, #0f2547);
-    border-bottom: 2px solid transparent;
-    border-image: linear-gradient(90deg, transparent, #f5d76e 20%, #fff3b0 50%, #f5d76e 80%, transparent) 1;
+    @apply relative block overflow-hidden text-center py-2 px-4 text-white cursor-pointer transition-[filter] duration-200 hover:brightness-110;
+    background-color: #2f6b12;
+    border-bottom: 4px solid hsl(var(--secondary));
   }
 
-  .grand-opening-banner-title {
-    @apply text-base md:text-lg font-extrabold uppercase tracking-[0.2em];
-    font-family: var(--app-font-serif, inherit);
-    background: linear-gradient(90deg, #b8860b, #f5d76e 25%, #fff3b0 50%, #f5d76e 75%, #b8860b);
-    background-size: 200% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-    animation: grand-opening-gradient 6s linear infinite;
-  }
-
-  .grand-opening-banner-sub {
-    @apply mt-0.5 text-xs md:text-sm font-medium normal-case tracking-wide;
-    color: rgb(255 255 255 / 0.88);
-  }
-
-  /* Soft light sweep that glints across the banner. */
-  .grand-opening-banner::after {
+  /* Diagonal stripes that drift slowly behind the text. One stripe cycle is 40px wide. */
+  .grand-opening-banner::before {
     content: "";
     position: absolute;
-    inset: 0;
-    width: 30%;
-    background: linear-gradient(110deg, transparent, rgb(255 243 176 / 0.22), transparent);
-    transform: translateX(-150%) skewX(-20deg);
-    animation: grand-opening-shine 4s ease-in-out infinite;
+    inset: 0 -40px;
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgb(255 255 255 / 0.08) 0 14.14px,
+      transparent 14.14px 28.28px
+    );
+    animation: grand-opening-stripes 3s linear infinite;
     pointer-events: none;
   }
 
+  .grand-opening-banner-title {
+    @apply text-lg sm:text-xl md:text-2xl font-bold uppercase tracking-[0.08em] sm:tracking-[0.12em];
+    font-family: var(--app-font-serif, inherit);
+  }
+
+  /* White tag with slanted ends, in the site's navy. */
+  .grand-opening-banner-date {
+    @apply px-3 sm:px-4 py-0.5 text-sm sm:text-base md:text-lg font-bold uppercase tracking-wide sm:tracking-wider;
+    font-family: var(--app-font-serif, inherit);
+    background-color: #fff;
+    color: hsl(var(--secondary));
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  }
+
+  .grand-opening-banner-sub {
+    @apply mt-1 text-xs md:text-sm font-medium normal-case tracking-wide;
+    text-wrap: balance;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .grand-opening-banner-title,
-    .grand-opening-banner::after {
+    .grand-opening-banner::before {
       animation: none;
-    }
-    .grand-opening-banner::after {
-      display: none;
     }
   }
 }
 
-@keyframes grand-opening-gradient {
-  to { background-position: 200% 0; }
-}
-
-@keyframes grand-opening-shine {
-  0% { transform: translateX(-150%) skewX(-20deg); }
-  60%, 100% { transform: translateX(350%) skewX(-20deg); }
+@keyframes grand-opening-stripes {
+  to { transform: translateX(40px); }
 }
