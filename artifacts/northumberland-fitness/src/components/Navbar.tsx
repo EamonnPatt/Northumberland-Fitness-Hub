@@ -3,7 +3,7 @@ import { Menu, X, UserRound } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
-import { INDIVIDUAL_MEMBERSHIP_URL, MEMBER_ACCOUNTS_ENABLED, SHOW_PROGRAMS } from "@/lib/site-mode";
+import { MEMBER_ACCOUNTS_ENABLED, SHOW_PROGRAMS } from "@/lib/site-mode";
 import logoSrc from "@assets/northumberland_logo.png";
 
 
@@ -80,19 +80,22 @@ export default function Navbar() {
         isScrolled ? "bg-white shadow-lg" : "bg-white/95 backdrop-blur-sm"
       )}
     >
+      {/* Free Day banner: scrolls to the gold Free Day card at the top of Memberships. */}
       <a
-        href={INDIVIDUAL_MEMBERSHIP_URL}
-        target="_blank"
-        rel="noopener noreferrer"
+        href="/#pricing"
+        onClick={(event) => {
+          event.preventDefault();
+          handleNavClick("pricing");
+        }}
         className="grand-opening-banner"
         data-testid="grand-opening-banner"
       >
         <span className="relative z-10 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-          <span className="grand-opening-banner-title">Grand Opening</span>
-          <span className="grand-opening-banner-date">Saturday, November 7</span>
+          <span className="grand-opening-banner-title">Free Day</span>
+          <span className="grand-opening-banner-date">Tuesday, November 10</span>
         </span>
         <span className="grand-opening-banner-sub relative z-10 block">
-          Come in, tour the facility, and see everything we have to offer!
+          Work out on us — full gym access, free for the day. Claim your free pass!
         </span>
       </a>
       <div className="container mx-auto px-4 md:px-6 py-2 flex items-center justify-between">

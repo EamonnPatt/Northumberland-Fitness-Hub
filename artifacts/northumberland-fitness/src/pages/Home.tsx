@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiFetch } from "@/lib/api";
-import { Dumbbell, Activity, Users, HeartPulse, Clock, MapPin, Phone, Mail, ArrowRight, CalendarDays, Tag, ShieldCheck } from "lucide-react";
+import { Dumbbell, Activity, Users, HeartPulse, Clock, MapPin, Phone, Mail, ArrowRight, CalendarDays, Tag, ShieldCheck, Star } from "lucide-react";
 
 const CONTACT_ENDPOINT = `${import.meta.env.BASE_URL}contact.php`;
 
@@ -31,6 +31,9 @@ const DEFAULT_HOURS = [
 type ClassRow = { name: string; day: string; time: string; instructor: string };
 
 const FLIIP_BUY_URL = "https://northumberland.fliipapp.com/user/register/buy_membership/1";
+
+// The gold Free Day card above the plans disappears at the end of the free day (midnight Eastern).
+const FREE_DAY_ENDS = new Date("2026-11-11T00:00:00-05:00").getTime();
 
 // Charged once a year per member on top of the monthly price.
 const ANNUAL_FEE = 45;
@@ -399,6 +402,44 @@ export default function Home() {
             </div>
             <MembershipFaq annualFee={ANNUAL_FEE} />
           </div>
+          {Date.now() < FREE_DAY_ENDS && (() => {
+            const weekly = MEMBERSHIP_GROUPS.flatMap((group) => group.tiers).find((tier) => tier.id === "weekly-pass");
+            const freeDayHref = (weekly && applyPricing(weekly, pricing).link) || MEMBERSHIP_SALES_URL;
+            return (
+              <motion.div
+                className="max-w-xl mx-auto mb-16"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                data-testid="free-day-membership"
+              >
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-yellow-200 via-amber-400 to-yellow-600 p-[3px] shadow-[0_0_40px_rgba(245,158,11,0.55)]">
+                  <div className="relative rounded-[10px] bg-gradient-to-br from-amber-50 via-yellow-100 to-amber-200 px-8 py-10 text-center">
+                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,transparent_35%,rgba(255,255,255,0.7)_50%,transparent_65%)]" />
+                    <div className="relative">
+                      <p className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-4 py-1 text-xs font-bold uppercase tracking-[0.2em] text-white shadow">
+                        <Star className="h-3.5 w-3.5 fill-current" /> One day only <Star className="h-3.5 w-3.5 fill-current" />
+                      </p>
+                      <h3 className="mt-5 text-3xl md:text-4xl font-serif uppercase text-amber-900">Free Day Membership</h3>
+                      <p className="mt-3 text-5xl font-bold bg-gradient-to-b from-amber-500 to-amber-800 bg-clip-text text-transparent">FREE</p>
+                      <p className="mt-2 font-bold uppercase tracking-wider text-amber-900">Tuesday, November 10</p>
+                      <p className="mt-4 mb-8 text-amber-900/80">Full access to the gym for the day, on us.</p>
+                      <Button
+                        asChild
+                        size="lg"
+                        className="uppercase font-bold tracking-wider border-0 bg-gradient-to-b from-amber-400 to-amber-600 text-white shadow-lg hover:from-amber-500 hover:to-amber-700"
+                        data-testid="pricing-cta-free-day"
+                      >
+                        <a href={freeDayHref} target="_blank" rel="noopener noreferrer">
+                          Claim Free Day
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })()}
           {MEMBERSHIP_GROUPS.filter((group) => !group.hidden).map((group) => (
             <div key={group.title} className="mb-16 last:mb-0">
               <h3 className="text-2xl md:text-3xl font-serif text-secondary text-center mb-8 uppercase">{group.title}</h3>

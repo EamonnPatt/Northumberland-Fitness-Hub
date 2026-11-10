@@ -162,8 +162,10 @@
 @layer components {
   .grand-opening-banner {
     @apply relative block overflow-hidden text-center py-2 px-4 text-white cursor-pointer transition-[filter] duration-200 hover:brightness-110;
-    background-color: #2f6b12;
-    border-bottom: 4px solid hsl(var(--secondary));
+    /* Gold for the Free Day; the grand opening used solid green #2f6b12. */
+    background: linear-gradient(90deg, #92400e, #b45309 30%, #ca8a04 50%, #b45309 70%, #92400e);
+    border-bottom: 4px solid #facc15;
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
   }
 
   /* Diagonal stripes that drift slowly behind the text. One stripe cycle is 40px wide. */
@@ -190,7 +192,8 @@
     @apply px-3 sm:px-4 py-0.5 text-sm sm:text-base md:text-lg font-bold uppercase tracking-wide sm:tracking-wider;
     font-family: var(--app-font-serif, inherit);
     background-color: #fff;
-    color: hsl(var(--secondary));
+    color: #92400e;
+    text-shadow: none;
     clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
   }
 
