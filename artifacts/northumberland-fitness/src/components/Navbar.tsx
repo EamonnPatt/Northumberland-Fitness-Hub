@@ -80,24 +80,6 @@ export default function Navbar() {
         isScrolled ? "bg-white shadow-lg" : "bg-white/95 backdrop-blur-sm"
       )}
     >
-      {/* Free Day banner: scrolls to the gold Free Day card at the top of Memberships. */}
-      <a
-        href="/#pricing"
-        onClick={(event) => {
-          event.preventDefault();
-          handleNavClick("pricing");
-        }}
-        className="grand-opening-banner"
-        data-testid="grand-opening-banner"
-      >
-        <span className="relative z-10 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-          <span className="grand-opening-banner-title">Free Day</span>
-          <span className="grand-opening-banner-date">Tuesday, November 10</span>
-        </span>
-        <span className="grand-opening-banner-sub relative z-10 block">
-          Work out on us — full gym access, free for the day. Claim your free pass!
-        </span>
-      </a>
       <div className="container mx-auto px-4 md:px-6 py-2 flex items-center justify-between">
         <div
           className="cursor-pointer shrink-0"
