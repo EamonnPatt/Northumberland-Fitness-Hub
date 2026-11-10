@@ -14,7 +14,7 @@ is no separate static host or `contact.php` any more.
 - `/api/auth/register`, `/api/auth/login`, `/api/auth/me`: member accounts (JWT-based)
 - `/api/content`: the editable site content (hours, homepage hero text, class timetable, pricing). Public `GET`, admin-only `PUT`.
 - `/api/admin/users`: list members and change roles (admin-only)
-- `/api/contact`: the Contact / Join The Club forms, emailed over SMTP (replaces `contact.php`)
+- `/api/contact`: the Contact / Join The Club forms, emailed through Resend (or SMTP if Resend isn't configured). The visitor's name is the sender name and their email is the Reply-To (replaces `contact.php`)
 
 One admin account is created automatically from `ADMIN_EMAIL` /
 `ADMIN_PASSWORD` on first startup. From the admin panel that account can
